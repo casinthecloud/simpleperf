@@ -39,7 +39,7 @@ public class ExecutionThread extends Thread {
 
         var stopError = false;
         var nbError = 0;
-        for (var i = 1; nbIterations != -1 && i <= nbIterations && !stopError; i++) {
+        for (var i = 1; (nbIterations == -1 || i <= nbIterations) && !stopError; i++) {
             try {
                 test.run();
                 if (smallInterval != -1 && i % smallInterval == 0) {
