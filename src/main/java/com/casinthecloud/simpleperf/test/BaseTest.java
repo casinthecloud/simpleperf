@@ -149,6 +149,10 @@ public abstract class BaseTest {
         return StringUtils.substringBetween(s1, s2, s3);
     }
 
+    protected String after(final String s1, final String s2) {
+        return StringUtils.substringAfter(s1, s2);
+    }
+
     protected String urlEncode(final String s) {
         return URLEncoder.encode(s, StandardCharsets.UTF_8);
     }
