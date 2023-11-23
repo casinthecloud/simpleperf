@@ -5,6 +5,8 @@ import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.pac4j.core.util.CommonHelper;
 
 import java.net.URI;
@@ -80,11 +82,13 @@ public abstract class BaseTest {
         return _headers.get("Location").get(0);
     }
 
-    protected String getCookie(final String name) {
+    protected Pair<String, String> getCookie(final String name) {
         val listHeaders = _headers.get("set-cookie");
         for (val header : listHeaders) {
-            if (header.startsWith(name + "=")) {
-                return between(header, name + "=", ";");
+            if (header.startsWith(name)) {
+                val key = before(header, "=");
+                val value = between(header, "=", ";");
+                return new ImmutablePair<String, String>(key, value);
             }
         }
         return null;
@@ -152,6 +156,10 @@ public abstract class BaseTest {
 
     protected String after(final String s1, final String s2) {
         return StringUtils.substringAfter(s1, s2);
+    }
+
+    protected String before(final String s1, final String s2) {
+        return StringUtils.substringBefore(s1, s2);
     }
 
     protected String urlEncode(final String s) {

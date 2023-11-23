@@ -10,8 +10,6 @@ import lombok.val;
  */
 public class CasOIDCLoginTest extends CasLoginTest {
 
-    protected static final String DISSESSION_OAUTH_OIDC = "DISSESSIONOauthOidcServerSupport";
-
     public void run() throws Exception {
         startTimer();
 
@@ -30,7 +28,7 @@ public class CasOIDCLoginTest extends CasLoginTest {
         execute();
         assertStatus(302);
         val loginUrl = getLocation();
-        val casSessionId = getCookie(DISSESSION_OAUTH_OIDC);
+        val casSessionId = getCookie(DISSESSION);
 
         _request = get(loginUrl);
         execute();
@@ -40,15 +38,15 @@ public class CasOIDCLoginTest extends CasLoginTest {
         val callbackUrl = getLocation();
         val tgc = getCookie(TGC);
 
-        _cookies.put(DISSESSION_OAUTH_OIDC, casSessionId);
-        _cookies.put(TGC, tgc);
+        _cookies.put(casSessionId.getLeft(), casSessionId.getRight());
+        _cookies.put(TGC, tgc.getRight());
         _request = get(callbackUrl);
         execute();
         assertStatus(302);
         val authorizeUrl2 = getLocation();
 
-        _cookies.put(DISSESSION_OAUTH_OIDC, casSessionId);
-        _cookies.put(TGC, tgc);
+        _cookies.put(casSessionId.getLeft(), casSessionId.getRight());
+        _cookies.put(TGC, tgc.getRight());
         _request = get(authorizeUrl2);
         execute();
         assertStatus(302);

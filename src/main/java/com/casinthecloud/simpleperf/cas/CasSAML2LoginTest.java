@@ -41,8 +41,8 @@ public class CasSAML2LoginTest extends CasTest {
         val tgc = getCookie(TGC);
 
         // call callback
-        _cookies.put(JSESSIONID, casSessionId);
-        _cookies.put(TGC, tgc);
+        _cookies.put(casSessionId.getLeft(), casSessionId.getRight());
+        _cookies.put(TGC, tgc.getRight());
         _request = get(samlCallbackUrl);
         execute();
         assertStatus(200);
@@ -53,14 +53,14 @@ public class CasSAML2LoginTest extends CasTest {
 
         _data.put("SAMLResponse", samlResponse);
         _data.put("RelayState", getRelayState());
-        _cookies.put("JSESSIONID", pac4jSessionId);
+        _cookies.put("JSESSIONID", pac4jSessionId.getRight());
         _request = post(pac4jCallbackUrl);
         execute();
         assertStatus(303);
         val protectedUrl = getLocation();
         val newPac4jSessionId = getCookie(JSESSIONID);
 
-        _cookies.put(JSESSIONID, newPac4jSessionId);
+        _cookies.put(JSESSIONID, newPac4jSessionId.getRight());
         _request = get(protectedUrl);
         execute();
         assertStatus(200);

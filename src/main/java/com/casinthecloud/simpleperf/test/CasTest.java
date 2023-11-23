@@ -12,6 +12,7 @@ import lombok.val;
 public abstract class CasTest extends WebTest {
 
     protected static final String TGC = "TGC";
+    protected static final String DISSESSION = "DISSESSION";
 
     protected void executePostCasCredentials(final String casLoginUrl) throws Exception {
         val webflow = between(_body, "name=\"execution\" value=\"", "\"/>");
