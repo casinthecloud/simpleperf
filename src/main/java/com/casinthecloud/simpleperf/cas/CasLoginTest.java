@@ -25,7 +25,7 @@ public class CasLoginTest extends CasTest {
 
         executePostCasCredentials(loginUrl);
         val callbackUrl = getLocation();
-        val st = after(getLocation(), "ticket=");
+        val st = after(callbackUrl, "ticket=");
 
         var validateUrl = getCasPrefixUrl() + "/p3/serviceValidate";
         validateUrl = addUrlParameter(validateUrl, "service", serviceUrl);

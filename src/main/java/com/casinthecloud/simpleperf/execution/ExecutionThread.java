@@ -50,16 +50,17 @@ public class ExecutionThread extends Thread {
                 if (bigInterval != -1 && i % bigInterval == 0) {
                     System.out.print((char) (65 + id));
                 }
-                nbError = 0;
             } catch (final Exception e) {
                 if (displayErrors) {
                     e.printStackTrace();
                 } else {
                     System.out.print("!");
                 }
-                nbError++;
-                if (maxErrors != -1 && nbError > maxErrors) {
-                    stopError = true;
+                if (maxErrors != -1) {
+                    nbError++;
+                    if (nbError >= maxErrors) {
+                        stopError = true;
+                    }
                 }
             }
         }

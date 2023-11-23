@@ -26,9 +26,9 @@ public class CasSAML2LoginTest extends CasTest {
         _data.put("SAMLRequest", samlRequest);
         _request = post(samlSsoUrl);
         execute();
+        assertStatus(302);
         val loginCasUrl = getLocation();
         val casSessionId = getCookie(JSESSIONID);
-        assertStatus(302);
 
         // call login page
         _request = get(loginCasUrl);
