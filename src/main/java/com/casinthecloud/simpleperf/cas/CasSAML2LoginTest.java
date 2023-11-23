@@ -4,21 +4,22 @@ import com.casinthecloud.simpleperf.test.CasTest;
 import lombok.val;
 
 /**
- * A test performing a SAML login in the CAS server (pac4j client).
+ * A test performing a SAML2 login in the CAS server (pac4j client).
  *
  * @author Jerome LELEU
  * @since 1.0.0
  */
-public class CasSAMLLoginTest extends CasTest {
+public class CasSAML2LoginTest extends CasTest {
 
     public void run() throws Exception {
         // call SP
-        _request = get("http://localhost:8081/saml/index.html");
+        _request = get(getProtectedClientAppUrl());
         execute();
+        // expecting POST binding
+        assertStatus(200);
         val pac4jSessionId = getCookie(JSESSIONID);
         val samlSsoUrl = htmlDecode(between(_body, "<form action=\"", "\" met"));
         val samlRequest = htmlDecode(between(_body, "\"SAMLRequest\" value=\"", "\"/>"));
-        assertStatus(200);
 
         startTimer();
         // post facade SAML
@@ -32,20 +33,12 @@ public class CasSAMLLoginTest extends CasTest {
         // call login page
         _request = get(loginCasUrl);
         execute();
-        var webflow = between(_body, "name=\"execution\" value=\"", "\"/>");
         assertStatus(200);
 
         // post credentials
-        _data.put("username", getUsername());
-        _data.put("password", getPassword());
-        _data.put("execution", webflow);
-        _data.put("_eventId", "submit");
-        _data.put("geolocation", "");
-        _request = post(loginCasUrl);
-        execute();
+        executePostCasCredentials(loginCasUrl);
         val samlCallbackUrl = getLocation();
         val tgc = getCookie(TGC);
-        assertStatus(302);
 
         // call callback
         _cookies.put(JSESSIONID, casSessionId);
@@ -59,7 +52,7 @@ public class CasSAMLLoginTest extends CasTest {
         val samlResponse = htmlDecode(between(_body, "\"SAMLResponse\" value=\"", "\"/>"));
 
         _data.put("SAMLResponse", samlResponse);
-        _data.put("RelayState", "https://specialurl");
+        _data.put("RelayState", getRelayState());
         _cookies.put("JSESSIONID", pac4jSessionId);
         _request = post(pac4jCallbackUrl);
         execute();
@@ -73,11 +66,11 @@ public class CasSAMLLoginTest extends CasTest {
         assertStatus(200);
     }
 
-    protected String getUsername() {
-        return "jleleu";
+    protected String getProtectedClientAppUrl() {
+        return "http://localhost:8081/saml/index.html";
     }
 
-    protected String getPassword() {
-        return "jleleu";
+    protected String getRelayState() {
+        return "https://specialurl";
     }
 }

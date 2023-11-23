@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.pac4j.core.util.CommonHelper;
 
 import java.net.URI;
 import java.net.URLDecoder;
@@ -100,7 +101,7 @@ public abstract class BaseTest {
     }
 
     protected HttpRequest post(final String url) throws Exception {
-        StringBuilder formBodyBuilder = new StringBuilder();
+        val formBodyBuilder = new StringBuilder();
         for (Map.Entry<String, String> singleEntry : _data.entrySet()) {
             if (formBodyBuilder.length() > 0) {
                 formBodyBuilder.append("&");
@@ -163,6 +164,10 @@ public abstract class BaseTest {
 
     protected String htmlDecode(final String s) {
         return StringEscapeUtils.unescapeHtml4(s);
+    }
+
+    protected String addUrlParameter(final String url, final String key, final String value) {
+        return CommonHelper.addParameter(url, key, value);
     }
 
     protected void assertStatus(final int s) {

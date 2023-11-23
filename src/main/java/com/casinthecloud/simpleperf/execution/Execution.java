@@ -27,6 +27,18 @@ public class Execution {
         val time = new AtomicLong(0);
         val completed = new AtomicInteger(0);
 
+        String textThread = nbThreads + " thread";
+        if (nbThreads > 1) {
+            textThread += "s";
+        }
+        String textIteration;
+        if (nbIterationsPerThread == -1) {
+            textIteration = "infinite loop";
+        } else {
+            textIteration = nbIterationsPerThread + " iterations per thread";
+        }
+        System.out.println("Execution started: " + textThread + ", " + textIteration);
+
         for (var i = 0; i < nbThreads; i++) {
             val test = supplierTest.get();
             test.setTime(time);
@@ -39,9 +51,9 @@ public class Execution {
         System.out.println();
         val finalTime = time.get();
         if (finalTime >= 5000) {
-            System.out.println("Time: " + finalTime/1000 + " s");
+            System.out.println("Execution ended and took: " + finalTime/1000 + " s");
         } else {
-            System.out.println("Time: " + finalTime + " ms");
+            System.out.println("Execution ended and took: " + finalTime + " ms");
         }
     }
 }
