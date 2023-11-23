@@ -1,7 +1,9 @@
 package com.casinthecloud.simpleperf.execution;
 
 import com.casinthecloud.simpleperf.test.BaseTest;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,6 +25,10 @@ public class Execution {
 
     private final Supplier<BaseTest> supplierTest;
 
+    @Getter
+    @Setter
+    private boolean displayErrors;
+
     public void launch() throws Exception {
         val time = new AtomicLong(0);
         val completed = new AtomicInteger(0);
@@ -43,7 +49,7 @@ public class Execution {
         for (var i = 0; i < nbThreads; i++) {
             val test = supplierTest.get();
             test.setTime(time);
-            val t = new ExecutionThread(i, nbIterationsPerThread, test, completed);
+            val t = new ExecutionThread(i, nbIterationsPerThread, test, completed, displayErrors);
             t.start();
         }
 

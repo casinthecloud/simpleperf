@@ -24,6 +24,8 @@ public class ExecutionThread extends Thread {
 
     private final AtomicInteger completed;
 
+    private final boolean displayErrors;
+
     @Override
     public void run() {
         val client = HttpClient.newBuilder()
@@ -50,7 +52,11 @@ public class ExecutionThread extends Thread {
                 }
                 nbError = 0;
             } catch (final Exception e) {
-                System.out.print("!");
+                if (displayErrors) {
+                    e.printStackTrace();
+                } else {
+                    System.out.print("!");
+                }
                 nbError++;
                 if (maxErrors != -1 && nbError > maxErrors) {
                     stopError = true;

@@ -172,7 +172,7 @@ public abstract class BaseTest {
 
     protected void assertStatus(final int s) {
         if (_response.statusCode() != s) {
-            throw new IllegalStateException("Expected HTTP " + s);
+            throw new IllegalStateException("Expected HTTP " + s + " / Received: " + _response.statusCode());
         }
     }
 }
