@@ -38,6 +38,7 @@ public class Execution {
             textIteration = nbIterationsPerThread + " iterations per thread";
         }
         System.out.println("Execution started: " + textThread + ", " + textIteration);
+        System.out.print("<");
 
         for (var i = 0; i < nbThreads; i++) {
             val test = supplierTest.get();
@@ -47,6 +48,7 @@ public class Execution {
         }
 
         while (completed.get() < nbThreads) {}
+        System.out.print(">");
 
         System.out.println();
         val finalTime = time.get();
