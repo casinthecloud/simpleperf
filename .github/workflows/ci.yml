@@ -44,7 +44,7 @@ jobs:
               uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc # tag=v3
               with:
                   java-version: ${{ env.JDK_CURRENT }}
-                  server-id: sonatype-nexus-snapshots
+                  server-id: ossrh
                   server-username: MAVEN_USERNAME
                   server-password: MAVEN_PASSWORD
                   distribution: ${{ env.DISTRIBUTION }}
