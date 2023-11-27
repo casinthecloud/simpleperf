@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
  * An utility class.
@@ -67,6 +68,7 @@ public final class Utils {
     public static void print(final char c) {
         System.out.print(c);
     }
+
     public static void print(final String t) {
         System.out.print(t);
     }
@@ -77,5 +79,13 @@ public final class Utils {
 
     public static void println() {
         System.out.println();
+    }
+
+    public static String base64Encode(final String t) {
+        return Base64.getEncoder().encodeToString(t.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static String base64Decode(final String t) {
+        return new String(Base64.getDecoder().decode(t), StandardCharsets.UTF_8);
     }
 }

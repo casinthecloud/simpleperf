@@ -20,6 +20,8 @@ public abstract class CasTest extends WebTest {
     protected static final String TGC = "TGC";
     protected static final String DISSESSION = "DISSESSION";
 
+    private String casPrefixUrl = "http://localhost:8080/cas";
+
     private String username = "jleleu";
 
     private String password = "jleleu";

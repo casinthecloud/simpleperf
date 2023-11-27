@@ -18,8 +18,6 @@ import static com.casinthecloud.simpletest.util.Utils.after;
 @Setter
 public class CasLoginTest extends CasTest {
 
-    private String casPrefixUrl = "http://localhost:8080/cas";
-
     private String serviceUrl = "http://localhost:8081/";
 
     public void run() throws Exception {

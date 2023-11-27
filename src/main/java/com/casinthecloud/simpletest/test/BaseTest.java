@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static com.casinthecloud.simpletest.util.Utils.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * The base test.
@@ -162,9 +163,7 @@ public abstract class BaseTest {
     }
 
     protected void assertStatus(final int s) {
-        if (_status == null || _status != s) {
-            throw new IllegalStateException("Expected HTTP " + s + " / Received: " + _status);
-        }
+        assertTrue("Expected HTTP " + s + " / Received: " + _status, _status != null && _status == s);
     }
 
     protected void info(final String t) {

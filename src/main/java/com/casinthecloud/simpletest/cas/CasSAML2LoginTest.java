@@ -5,11 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
-import static com.casinthecloud.simpletest.util.Utils.between;
-import static com.casinthecloud.simpletest.util.Utils.htmlDecode;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
+import static com.casinthecloud.simpletest.util.Utils.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
- * A test performing a SAML2 login in the CAS server (pac4j client).
+ * A test performing a SAML2 login in the CAS server.
  *
  * @author Jerome LELEU
  * @since 1.0.0
@@ -18,28 +22,35 @@ import static com.casinthecloud.simpletest.util.Utils.htmlDecode;
 @Setter
 public class CasSAML2LoginTest extends CasTest {
 
-    private String protectedClientAppUrl = "http://localhost:8081/saml/index.html";
+    private String serviceUrl = "http://localhost:8081/callback?client_name=SAML2Client";
 
     private String relayState = "https://specialurl";
 
     public void run() throws Exception {
-        // call SP
-        _request = get(getProtectedClientAppUrl());
-        execute();
-        // expecting POST binding
-        assertStatus(200);
-        val pac4jSessionId = getCookie(JSESSIONID);
-        val samlSsoUrl = htmlDecode(between(_body, "<form action=\"", "\" met"));
-        val samlRequest = htmlDecode(between(_body, "\"SAMLRequest\" value=\"", "\"/>"));
 
         startTimer();
+
+        val samlSsoUrl = getCasPrefixUrl() + "/idp/profile/SAML2/POST/SSO";
+        val relayState = getRelayState();
+        val serviceUrl = getServiceUrl();
+        val samlRequestId = random(1000);
+        val samlRequest = base64Encode("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<saml2p:AuthnRequest\n" +
+                "    xmlns:saml2p=\"urn:oasis:names:tc:SAML:2.0:protocol\" AssertionConsumerServiceURL=\"" + serviceUrl + "\" Destination=\"" + samlSsoUrl + "\" ForceAuthn=\"false\" ID=\"" + samlRequestId + "\" IsPassive=\"false\" IssueInstant=\"" + ZonedDateTime.now(ZoneOffset.UTC) + "\" ProtocolBinding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" ProviderName=\"client-app\" Version=\"2.0\">\n" +
+                "    <saml2:Issuer\n" +
+                "        xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">" + serviceUrl + "\n" +
+                "    </saml2:Issuer>\n" +
+                "</saml2p:AuthnRequest>");
+
         // post facade SAML
+        _data.put("RelayState", relayState);
         _data.put("SAMLRequest", samlRequest);
         _request = post(samlSsoUrl);
         execute();
         assertStatus(302);
         val loginCasUrl = getLocation();
-        val casSessionId = getCookie(JSESSIONID);
+        val casSession = getCookie(JSESSIONID);
+        info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
 
         // call login page
         _request = get(loginCasUrl);
@@ -50,30 +61,21 @@ public class CasSAML2LoginTest extends CasTest {
         executePostCasCredentials(loginCasUrl);
         val samlCallbackUrl = getLocation();
         val tgc = getCookie(TGC);
+        info("Found TGC: " + tgc.getRight());
 
         // call callback
-        _cookies.put(casSessionId.getLeft(), casSessionId.getRight());
+        _cookies.put(casSession.getLeft(), casSession.getRight());
         _cookies.put(TGC, tgc.getRight());
         _request = get(samlCallbackUrl);
         execute();
         assertStatus(200);
-        saveTimer();
 
         val pac4jCallbackUrl = htmlDecode(between(_body, "<form action=\"", "\" met"));
         val samlResponse = htmlDecode(between(_body, "\"SAMLResponse\" value=\"", "\"/>"));
+        assertEquals(serviceUrl, pac4jCallbackUrl);
+        assertNotNull(base64Decode(samlResponse));
 
-        _data.put("SAMLResponse", samlResponse);
-        _data.put("RelayState", getRelayState());
-        _cookies.put("JSESSIONID", pac4jSessionId.getRight());
-        _request = post(pac4jCallbackUrl);
-        execute();
-        assertStatus(303);
-        val protectedUrl = getLocation();
-        val newPac4jSessionId = getCookie(JSESSIONID);
+        saveTimer();
 
-        _cookies.put(JSESSIONID, newPac4jSessionId.getRight());
-        _request = get(protectedUrl);
-        execute();
-        assertStatus(200);
     }
 }
