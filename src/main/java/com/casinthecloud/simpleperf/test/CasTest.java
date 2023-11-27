@@ -1,5 +1,7 @@
 package com.casinthecloud.simpleperf.test;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 
 import static com.casinthecloud.simpleperf.util.Utils.between;
@@ -11,10 +13,16 @@ import static com.casinthecloud.simpleperf.util.Utils.between;
  * @since 1.0.0
  */
 
+@Getter
+@Setter
 public abstract class CasTest extends WebTest {
 
     protected static final String TGC = "TGC";
     protected static final String DISSESSION = "DISSESSION";
+
+    private String username = "jleleu";
+
+    private String password = "jleleu";
 
     protected void executePostCasCredentials(final String casLoginUrl) throws Exception {
         val webflow = between(_body, "name=\"execution\" value=\"", "\"/>");
@@ -27,13 +35,5 @@ public abstract class CasTest extends WebTest {
         _request = post(casLoginUrl);
         execute();
         assertStatus(302);
-    }
-
-    protected String getUsername() {
-        return "jleleu";
-    }
-
-    protected String getPassword() {
-        return "jleleu";
     }
 }

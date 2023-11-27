@@ -1,6 +1,8 @@
 package com.casinthecloud.simpleperf.cas;
 
 import com.casinthecloud.simpleperf.test.CasTest;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 
 import static com.casinthecloud.simpleperf.util.Utils.between;
@@ -12,7 +14,13 @@ import static com.casinthecloud.simpleperf.util.Utils.htmlDecode;
  * @author Jerome LELEU
  * @since 1.0.0
  */
+@Getter
+@Setter
 public class CasSAML2LoginTest extends CasTest {
+
+    private String protectedClientAppUrl = "http://localhost:8081/saml/index.html";
+
+    private String relayState = "https://specialurl";
 
     public void run() throws Exception {
         // call SP
@@ -67,13 +75,5 @@ public class CasSAML2LoginTest extends CasTest {
         _request = get(protectedUrl);
         execute();
         assertStatus(200);
-    }
-
-    protected String getProtectedClientAppUrl() {
-        return "http://localhost:8081/saml/index.html";
-    }
-
-    protected String getRelayState() {
-        return "https://specialurl";
     }
 }

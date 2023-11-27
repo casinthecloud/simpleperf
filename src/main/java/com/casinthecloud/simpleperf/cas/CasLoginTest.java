@@ -1,6 +1,8 @@
 package com.casinthecloud.simpleperf.cas;
 
 import com.casinthecloud.simpleperf.test.CasTest;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 
 import static com.casinthecloud.simpleperf.util.Utils.addUrlParameter;
@@ -12,7 +14,13 @@ import static com.casinthecloud.simpleperf.util.Utils.after;
  * @author Jerome LELEU
  * @since 1.0.0
  */
+@Getter
+@Setter
 public class CasLoginTest extends CasTest {
+
+    private String casPrefixUrl = "http://localhost:8080/cas";
+
+    private String serviceUrl = "http://localhost:8081/";
 
     public void run() throws Exception {
 
@@ -38,13 +46,5 @@ public class CasLoginTest extends CasTest {
         execute();
         assertStatus(200);
         saveTimer();
-    }
-
-    protected String getCasPrefixUrl() {
-        return "http://localhost:8080/cas";
-    }
-
-    protected String getServiceUrl() {
-        return "http://localhost:8081/";
     }
 }

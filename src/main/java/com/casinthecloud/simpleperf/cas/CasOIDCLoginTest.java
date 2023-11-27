@@ -1,5 +1,7 @@
 package com.casinthecloud.simpleperf.cas;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 
 import static com.casinthecloud.simpleperf.util.Utils.*;
@@ -10,7 +12,15 @@ import static com.casinthecloud.simpleperf.util.Utils.*;
  * @author Jerome LELEU
  * @since 1.0.0
  */
+@Getter
+@Setter
 public class CasOIDCLoginTest extends CasLoginTest {
+
+    private String clientId = "myclient";
+
+    private String clientSecret = "mysecret";
+
+    private String scope = "openid email profile";
 
     public void run() throws Exception {
         startTimer();
@@ -67,17 +77,5 @@ public class CasOIDCLoginTest extends CasLoginTest {
         assertStatus(200);
 
         saveTimer();
-    }
-
-    protected String getClientId() {
-        return "myclient";
-    }
-
-    protected String getClientSecret() {
-        return "mysecret";
-    }
-
-    protected String getScope() {
-        return "openid email profile";
     }
 }
