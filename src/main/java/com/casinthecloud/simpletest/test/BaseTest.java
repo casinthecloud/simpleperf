@@ -166,4 +166,10 @@ public abstract class BaseTest {
             throw new IllegalStateException("Expected HTTP " + s + " / Received: " + _status);
         }
     }
+
+    protected void info(final String t) {
+        if (displayInfos) {
+            println(t);
+        }
+    }
 }

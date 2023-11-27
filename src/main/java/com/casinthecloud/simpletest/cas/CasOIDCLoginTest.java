@@ -40,7 +40,8 @@ public class CasOIDCLoginTest extends CasLoginTest {
         execute();
         assertStatus(302);
         val loginUrl = getLocation();
-        val casSessionId = getCookie(DISSESSION);
+        val casSession = getCookie(DISSESSION);
+        info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
 
         _request = get(loginUrl);
         execute();
@@ -49,15 +50,16 @@ public class CasOIDCLoginTest extends CasLoginTest {
         executePostCasCredentials(loginUrl);
         val callbackUrl = getLocation();
         val tgc = getCookie(TGC);
+        info("Found TGC: " + tgc.getRight());
 
-        _cookies.put(casSessionId.getLeft(), casSessionId.getRight());
+        _cookies.put(casSession.getLeft(), casSession.getRight());
         _cookies.put(TGC, tgc.getRight());
         _request = get(callbackUrl);
         execute();
         assertStatus(302);
         val authorizeUrl2 = getLocation();
 
-        _cookies.put(casSessionId.getLeft(), casSessionId.getRight());
+        _cookies.put(casSession.getLeft(), casSession.getRight());
         _cookies.put(TGC, tgc.getRight());
         _request = get(authorizeUrl2);
         execute();
