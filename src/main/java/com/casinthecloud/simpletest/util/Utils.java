@@ -1,12 +1,13 @@
 package com.casinthecloud.simpletest.util;
 
+import com.casinthecloud.simpletest.test.BaseTest;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 
 /**
  * An utility class.
@@ -16,20 +17,22 @@ import java.util.Base64;
  */
 public final class Utils {
 
+    public static final BaseTest CLEAR_CONTEXT = new BaseTest() {
+        @Override
+        public void run(final Map<String, Object> ctx) throws Exception {
+            info("Clear context");
+            ctx.clear();
+        }
+    };
+
+    public static final BaseTest NO_TEST = new BaseTest() {
+        @Override
+        public void run(final Map<String, Object> ctx) throws Exception {
+        }
+    };
+
     public static int random(final int max) {
         return (int)(Math.random() * max);
-    }
-
-    public static String between(final String s1, final String s2, final String s3) {
-        return StringUtils.substringBetween(s1, s2, s3);
-    }
-
-    public static String after(final String s1, final String s2) {
-        return StringUtils.substringAfter(s1, s2);
-    }
-
-    public static String before(final String s1, final String s2) {
-        return StringUtils.substringBefore(s1, s2);
     }
 
     public static String urlEncode(final String s) {

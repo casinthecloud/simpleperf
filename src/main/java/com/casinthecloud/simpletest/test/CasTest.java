@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
-import static com.casinthecloud.simpletest.util.Utils.between;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
 
 /**
  * A test for CAS.
@@ -22,12 +22,14 @@ public abstract class CasTest extends WebTest {
 
     private String casPrefixUrl = "http://localhost:8080/cas";
 
+    private String casCookieName = TGC;
+
     private String username = "jleleu";
 
     private String password = "jleleu";
 
     protected void executePostCasCredentials(final String casLoginUrl) throws Exception {
-        val webflow = between(_body, "name=\"execution\" value=\"", "\"/>");
+        val webflow = substringBetween(_body, "name=\"execution\" value=\"", "\"/>");
 
         _data.put("username", getUsername());
         _data.put("password", getPassword());

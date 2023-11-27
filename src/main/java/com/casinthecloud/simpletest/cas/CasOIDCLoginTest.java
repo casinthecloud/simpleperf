@@ -4,7 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
-import static com.casinthecloud.simpletest.util.Utils.*;
+import java.util.Map;
+
+import static com.casinthecloud.simpletest.util.Utils.addUrlParameter;
+import static com.casinthecloud.simpletest.util.Utils.random;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
 
 /**
  * A test performing an OIDC login in the CAS server.
@@ -22,7 +26,7 @@ public class CasOIDCLoginTest extends CasLoginTest {
 
     private String scope = "openid email profile";
 
-    public void run() throws Exception {
+    public void run(final Map<String, Object> ctx) throws Exception {
         startTimer();
 
         val clientId = getClientId();
@@ -65,7 +69,7 @@ public class CasOIDCLoginTest extends CasLoginTest {
         execute();
         assertStatus(302);
         val clientAppUrl = getLocation();
-        val code = between(clientAppUrl, "code=", "&state");
+        val code = substringBetween(clientAppUrl, "code=", "&state");
 
         var tokenUrl = getCasPrefixUrl() + "/oidc/token";
         tokenUrl = addUrlParameter(tokenUrl, "grant_type", "authorization_code");

@@ -4,9 +4,12 @@ import com.casinthecloud.simpletest.test.CasTest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Map;
 
 import static com.casinthecloud.simpletest.util.Utils.addUrlParameter;
-import static com.casinthecloud.simpletest.util.Utils.after;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
 
 /**
  * A test performing a CAS login in the CAS server.
@@ -20,22 +23,34 @@ public class CasLoginTest extends CasTest {
 
     private String serviceUrl = "http://localhost:8081/";
 
-    public void run() throws Exception {
+    public void run(final Map<String, Object> ctx) throws Exception {
 
         startTimer();
         val serviceUrl = getServiceUrl();
 
         var loginUrl = getCasPrefixUrl() + "/login";
         loginUrl = addUrlParameter(loginUrl, "service", serviceUrl);
+        var tgc = (Pair<String, String>) ctx.get(TGC);
 
+        if (tgc != null) {
+            info("Re-use " + tgc.getLeft() + " : " + tgc.getRight());
+            _cookies.put(getCasCookieName(), tgc.getRight());
+        }
         _request = get(loginUrl);
         execute();
-        assertStatus(200);
+        if (_status == 200) {
 
-        executePostCasCredentials(loginUrl);
+            executePostCasCredentials(loginUrl);
+            tgc = getCookie(getCasCookieName());
+            ctx.put(TGC, tgc);
+            info("Found " + tgc.getLeft() + " : " + tgc.getRight());
+
+        } else {
+            assertStatus(302);
+        }
+
         val callbackUrl = getLocation();
-        val st = after(callbackUrl, "ticket=");
-
+        val st = substringAfter(callbackUrl, "ticket=");
         var validateUrl = getCasPrefixUrl() + "/p3/serviceValidate";
         validateUrl = addUrlParameter(validateUrl, "service", serviceUrl);
         validateUrl = addUrlParameter(validateUrl, "ticket", st);

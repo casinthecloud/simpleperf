@@ -4,24 +4,22 @@ import lombok.val;
 
 import java.util.Map;
 
-import static com.casinthecloud.simpletest.util.Utils.random;
-
 /**
- * Randomly run of the tests.
+ * Run all tests.
  *
  * @author Jerome LELEU
  * @since 1.0.0
  */
-public class RandomTest extends MultipleTest {
+public class ChainingTest extends MultipleTest {
 
-    public RandomTest(final BaseTest... tests) {
+    public ChainingTest(final BaseTest... tests) {
         this.tests = tests;
     }
 
     @Override
     public void run(final Map<String, Object> ctx) throws Exception {
-        val r = random(tests.length);
-
-        tests[r].run(ctx);
+        for (val test : tests) {
+            test.run(ctx);
+        }
     }
 }

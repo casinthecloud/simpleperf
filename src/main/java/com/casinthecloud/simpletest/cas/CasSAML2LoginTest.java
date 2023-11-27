@@ -7,8 +7,10 @@ import lombok.val;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Map;
 
 import static com.casinthecloud.simpletest.util.Utils.*;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -26,7 +28,7 @@ public class CasSAML2LoginTest extends CasTest {
 
     private String relayState = "https://specialurl";
 
-    public void run() throws Exception {
+    public void run(final Map<String, Object> ctx) throws Exception {
 
         startTimer();
 
@@ -70,8 +72,8 @@ public class CasSAML2LoginTest extends CasTest {
         execute();
         assertStatus(200);
 
-        val pac4jCallbackUrl = htmlDecode(between(_body, "<form action=\"", "\" met"));
-        val samlResponse = htmlDecode(between(_body, "\"SAMLResponse\" value=\"", "\"/>"));
+        val pac4jCallbackUrl = htmlDecode(substringBetween(_body, "<form action=\"", "\" met"));
+        val samlResponse = htmlDecode(substringBetween(_body, "\"SAMLResponse\" value=\"", "\"/>"));
         assertEquals(serviceUrl, pac4jCallbackUrl);
         assertNotNull(base64Decode(samlResponse));
 

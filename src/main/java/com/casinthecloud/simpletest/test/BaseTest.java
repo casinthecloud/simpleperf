@@ -16,7 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.casinthecloud.simpletest.util.Utils.*;
+import static com.casinthecloud.simpletest.util.Utils.println;
+import static com.casinthecloud.simpletest.util.Utils.urlEncode;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -65,7 +68,7 @@ public abstract class BaseTest {
     @Setter
     private boolean displayInfos;
 
-    public abstract void run() throws Exception;
+    public abstract void run(final Map<String, Object> ctx) throws Exception;
 
     protected void saveTimer() {
         long t1 = System.currentTimeMillis();
@@ -85,8 +88,8 @@ public abstract class BaseTest {
         val listHeaders = _headers.get("set-cookie");
         for (val header : listHeaders) {
             if (header.startsWith(name)) {
-                val key = before(header, "=");
-                val value = between(header, "=", ";");
+                val key = substringBefore(header, "=");
+                val value = substringBetween(header, "=", ";");
                 return new ImmutablePair<String, String>(key, value);
             }
         }
@@ -110,7 +113,7 @@ public abstract class BaseTest {
 
     protected HttpRequest post(final String url) throws Exception {
         if (displayInfos) {
-            println("POST : " + url);
+            println("POST: " + url);
         }
 
         val formBodyBuilder = new StringBuilder();
@@ -143,7 +146,7 @@ public abstract class BaseTest {
 
     protected HttpRequest get(final String url) throws Exception {
         if (displayInfos) {
-            println("GET : " + url);
+            println("GET: " + url);
         }
 
         val builder =  HttpRequest.newBuilder()

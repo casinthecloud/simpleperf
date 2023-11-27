@@ -28,8 +28,6 @@ public class Execution {
 
     public Execution(final Supplier<BaseTest> supplierTest) {
         this(1, 1, supplierTest);
-        displayInfos = true;
-        displayErrors = true;
     }
 
     public Execution(final int nbIterationsPerThread, final Supplier<BaseTest> supplierTest) {
@@ -40,6 +38,10 @@ public class Execution {
         this.nbThreads = nbThreads;
         this.nbIterationsPerThread = nbIterationsPerThread;
         this.supplierTest = supplierTest;
+        if (nbThreads == 1 && nbIterationsPerThread < 100) {
+            displayInfos = true;
+            displayErrors = true;
+        }
     }
 
     @Getter
@@ -61,6 +63,8 @@ public class Execution {
         String textIteration;
         if (nbIterationsPerThread == -1) {
             textIteration = "infinite loop";
+        } else if (nbIterationsPerThread == 1) {
+            textIteration = nbIterationsPerThread + " iteration per thread";
         } else {
             textIteration = nbIterationsPerThread + " iterations per thread";
         }
@@ -78,10 +82,9 @@ public class Execution {
 
         while (completed.get() < nbThreads) {}
         if (!displayInfos) {
-            print(">");
+            println(">");
         }
 
-        println();
         val finalTime = time.get();
         if (finalTime >= 5000) {
             println("Execution ended and took: " + finalTime/1000 + " s");

@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.net.http.HttpClient;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.casinthecloud.simpletest.util.Utils.print;
+import static com.casinthecloud.simpletest.util.Utils.println;
 
 /**
  * A thread dedicated to the test execution (sequential).
@@ -44,11 +46,19 @@ public class ExecutionThread extends Thread {
         val smallInterval = test.getSmallInterval();
         val bigInterval = test.getBigInterval();
 
+        val ctx = new HashMap<String, Object>();
+
         var stopError = false;
         var nbError = 0;
         for (var i = 1; (nbIterations == -1 || i <= nbIterations) && !stopError; i++) {
             try {
-                test.run();
+                if (displayInfos) {
+                    println("## iteration: " + i);
+                }
+                test.run(ctx);
+                if (displayInfos) {
+                    println();
+                }
                 if (smallInterval != -1 && i % smallInterval == 0) {
                     print((char) (97 + id));
                 }
