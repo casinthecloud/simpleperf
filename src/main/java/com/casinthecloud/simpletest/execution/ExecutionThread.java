@@ -26,6 +26,8 @@ public class ExecutionThread extends Thread {
 
     private final AtomicInteger completed;
 
+    private final boolean displayInfos;
+
     private final boolean displayErrors;
 
     @Override
@@ -36,6 +38,7 @@ public class ExecutionThread extends Thread {
                 .build();
 
         test.setClient(client);
+        test.setDisplayInfos(displayInfos);
 
         val maxErrors = test.getMaxErrors();
         val smallInterval = test.getSmallInterval();

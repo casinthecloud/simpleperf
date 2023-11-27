@@ -28,6 +28,8 @@ public class Execution {
 
     public Execution(final Supplier<BaseTest> supplierTest) {
         this(1, 1, supplierTest);
+        displayInfos = true;
+        displayErrors = true;
     }
 
     public Execution(final int nbIterationsPerThread, final Supplier<BaseTest> supplierTest) {
@@ -39,6 +41,10 @@ public class Execution {
         this.nbIterationsPerThread = nbIterationsPerThread;
         this.supplierTest = supplierTest;
     }
+
+    @Getter
+    @Setter
+    private boolean displayInfos;
 
     @Getter
     @Setter
@@ -59,17 +65,21 @@ public class Execution {
             textIteration = nbIterationsPerThread + " iterations per thread";
         }
         println("Execution started: " + textThread + ", " + textIteration);
-        print("<");
+        if (!displayInfos) {
+            print("<");
+        }
 
         for (var i = 0; i < nbThreads; i++) {
             val test = supplierTest.get();
             test.setTime(time);
-            val t = new ExecutionThread(i, nbIterationsPerThread, test, completed, displayErrors);
+            val t = new ExecutionThread(i, nbIterationsPerThread, test, completed, displayInfos, displayErrors);
             t.start();
         }
 
         while (completed.get() < nbThreads) {}
-        print(">");
+        if (!displayInfos) {
+            print(">");
+        }
 
         println();
         val finalTime = time.get();

@@ -46,6 +46,8 @@ public abstract class BaseTest {
 
     protected Map<String, String> _cookies = new HashMap<>();
 
+    protected Integer _status;
+
     @Getter
     @Setter
     private int maxErrors = 5;
@@ -57,6 +59,10 @@ public abstract class BaseTest {
     @Getter
     @Setter
     private int bigInterval = 250;
+
+    @Getter
+    @Setter
+    private boolean displayInfos;
 
     public abstract void run() throws Exception;
 
@@ -90,13 +96,22 @@ public abstract class BaseTest {
         val theResponse = client.send(_request, HttpResponse.BodyHandlers.ofString());
         _headers = theResponse.headers().map();
         _body = theResponse.body();
+        _status = theResponse.statusCode();
         _response = theResponse;
         _request = null;
         _cookies = new HashMap<String, String>();
         _data = new HashMap<String, String>();
+
+        if (displayInfos) {
+            println("Execute => " + _status);
+        }
     }
 
     protected HttpRequest post(final String url) throws Exception {
+        if (displayInfos) {
+            println("POST : " + url);
+        }
+
         val formBodyBuilder = new StringBuilder();
         for (Map.Entry<String, String> singleEntry : _data.entrySet()) {
             if (formBodyBuilder.length() > 0) {
@@ -126,6 +141,10 @@ public abstract class BaseTest {
     }
 
     protected HttpRequest get(final String url) throws Exception {
+        if (displayInfos) {
+            println("GET : " + url);
+        }
+
         val builder =  HttpRequest.newBuilder()
                 .uri(new URI(url))
                 .GET()
@@ -143,8 +162,8 @@ public abstract class BaseTest {
     }
 
     protected void assertStatus(final int s) {
-        if (_response.statusCode() != s) {
-            throw new IllegalStateException("Expected HTTP " + s + " / Received: " + _response.statusCode());
+        if (_status == null || _status != s) {
+            throw new IllegalStateException("Expected HTTP " + s + " / Received: " + _status);
         }
     }
 }
