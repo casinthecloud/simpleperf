@@ -1,4 +1,4 @@
-package com.casinthecloud.simpleperf.util;
+package com.casinthecloud.simpletest.util;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,5 +62,20 @@ public final class Utils {
             return sb.toString();
         }
         return null;
+    }
+
+    public static void print(final char c) {
+        System.out.print(c);
+    }
+    public static void print(final String t) {
+        System.out.print(t);
+    }
+
+    public static void println(final String t) {
+        System.out.println(t);
+    }
+
+    public static void println() {
+        System.out.println();
     }
 }

@@ -1,4 +1,4 @@
-# `simpleperf`: a simple framework to measure performance (JDK 11)
+# `simpleperf`: A simple framework for functional/performance tests (JDK 11)
 
 ### Launch a test:
 

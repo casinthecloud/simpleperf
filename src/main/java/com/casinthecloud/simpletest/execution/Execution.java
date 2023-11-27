@@ -1,6 +1,6 @@
-package com.casinthecloud.simpleperf.execution;
+package com.casinthecloud.simpletest.execution;
 
-import com.casinthecloud.simpleperf.test.BaseTest;
+import com.casinthecloud.simpletest.test.BaseTest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -9,6 +9,9 @@ import lombok.val;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
+
+import static com.casinthecloud.simpletest.util.Utils.print;
+import static com.casinthecloud.simpletest.util.Utils.println;
 
 /**
  * The main class to use to launch the execution of a test.
@@ -43,8 +46,8 @@ public class Execution {
         } else {
             textIteration = nbIterationsPerThread + " iterations per thread";
         }
-        System.out.println("Execution started: " + textThread + ", " + textIteration);
-        System.out.print("<");
+        println("Execution started: " + textThread + ", " + textIteration);
+        print("<");
 
         for (var i = 0; i < nbThreads; i++) {
             val test = supplierTest.get();
@@ -54,14 +57,14 @@ public class Execution {
         }
 
         while (completed.get() < nbThreads) {}
-        System.out.print(">");
+        print(">");
 
-        System.out.println();
+        println();
         val finalTime = time.get();
         if (finalTime >= 5000) {
-            System.out.println("Execution ended and took: " + finalTime/1000 + " s");
+            println("Execution ended and took: " + finalTime/1000 + " s");
         } else {
-            System.out.println("Execution ended and took: " + finalTime + " ms");
+            println("Execution ended and took: " + finalTime + " ms");
         }
     }
 }

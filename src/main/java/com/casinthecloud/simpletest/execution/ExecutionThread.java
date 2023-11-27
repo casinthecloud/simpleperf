@@ -1,11 +1,13 @@
-package com.casinthecloud.simpleperf.execution;
+package com.casinthecloud.simpletest.execution;
 
-import com.casinthecloud.simpleperf.test.BaseTest;
+import com.casinthecloud.simpletest.test.BaseTest;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.net.http.HttpClient;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.casinthecloud.simpletest.util.Utils.print;
 
 /**
  * A thread dedicated to the test execution (sequential).
@@ -45,16 +47,16 @@ public class ExecutionThread extends Thread {
             try {
                 test.run();
                 if (smallInterval != -1 && i % smallInterval == 0) {
-                    System.out.print((char) (97 + id));
+                    print((char) (97 + id));
                 }
                 if (bigInterval != -1 && i % bigInterval == 0) {
-                    System.out.print((char) (65 + id));
+                    print((char) (65 + id));
                 }
             } catch (final Exception e) {
                 if (displayErrors) {
                     e.printStackTrace();
                 } else {
-                    System.out.print("!");
+                    print("!");
                 }
                 if (maxErrors != -1) {
                     nbError++;

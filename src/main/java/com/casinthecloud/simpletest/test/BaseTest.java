@@ -1,4 +1,4 @@
-package com.casinthecloud.simpleperf.test;
+package com.casinthecloud.simpletest.test;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.casinthecloud.simpleperf.util.Utils.*;
+import static com.casinthecloud.simpletest.util.Utils.*;
 
 /**
  * The base test.

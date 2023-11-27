@@ -1,11 +1,11 @@
-package com.casinthecloud.simpleperf.test;
+package com.casinthecloud.simpletest.test;
 
 import lombok.val;
 
 import java.net.http.HttpClient;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.casinthecloud.simpleperf.util.Utils.random;
+import static com.casinthecloud.simpletest.util.Utils.random;
 
 /**
  * Randomly run test.

@@ -1,12 +1,12 @@
-package com.casinthecloud.simpleperf.cas;
+package com.casinthecloud.simpletest.cas;
 
-import com.casinthecloud.simpleperf.test.CasTest;
+import com.casinthecloud.simpletest.test.CasTest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
-import static com.casinthecloud.simpleperf.util.Utils.between;
-import static com.casinthecloud.simpleperf.util.Utils.htmlDecode;
+import static com.casinthecloud.simpletest.util.Utils.between;
+import static com.casinthecloud.simpletest.util.Utils.htmlDecode;
 
 /**
  * A test performing a SAML2 login in the CAS server (pac4j client).

@@ -1,4 +1,4 @@
-package com.casinthecloud.simpleperf.test;
+package com.casinthecloud.simpletest.test;
 
 /**
  * A test for the web.

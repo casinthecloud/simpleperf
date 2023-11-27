@@ -1,10 +1,10 @@
-package com.casinthecloud.simpleperf.test;
+package com.casinthecloud.simpletest.test;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
-import static com.casinthecloud.simpleperf.util.Utils.between;
+import static com.casinthecloud.simpletest.util.Utils.between;
 
 /**
  * A test for CAS.
