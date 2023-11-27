@@ -3,24 +3,20 @@ package com.casinthecloud.simpleperf.test;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.pac4j.core.util.CommonHelper;
 
 import java.net.URI;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static com.casinthecloud.simpleperf.util.Utils.*;
 
 /**
  * The base test.
@@ -63,10 +59,6 @@ public abstract class BaseTest {
     private int bigInterval = 250;
 
     public abstract void run() throws Exception;
-
-    protected int random(final int max) {
-        return (int)(Math.random() * max);
-    }
 
     protected void saveTimer() {
         long t1 = System.currentTimeMillis();
@@ -148,34 +140,6 @@ public abstract class BaseTest {
         }
 
         return builder.build();
-    }
-
-    protected String between(final String s1, final String s2, final String s3) {
-        return StringUtils.substringBetween(s1, s2, s3);
-    }
-
-    protected String after(final String s1, final String s2) {
-        return StringUtils.substringAfter(s1, s2);
-    }
-
-    protected String before(final String s1, final String s2) {
-        return StringUtils.substringBefore(s1, s2);
-    }
-
-    protected String urlEncode(final String s) {
-        return URLEncoder.encode(s, StandardCharsets.UTF_8);
-    }
-
-    protected String urlDecode(final String s) {
-        return URLDecoder.decode(s, StandardCharsets.UTF_8);
-    }
-
-    protected String htmlDecode(final String s) {
-        return StringEscapeUtils.unescapeHtml4(s);
-    }
-
-    protected String addUrlParameter(final String url, final String key, final String value) {
-        return CommonHelper.addParameter(url, key, value);
     }
 
     protected void assertStatus(final int s) {

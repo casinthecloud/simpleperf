@@ -3,6 +3,9 @@ package com.casinthecloud.simpleperf.cas;
 import com.casinthecloud.simpleperf.test.CasTest;
 import lombok.val;
 
+import static com.casinthecloud.simpleperf.util.Utils.addUrlParameter;
+import static com.casinthecloud.simpleperf.util.Utils.after;
+
 /**
  * A test performing a CAS login in the CAS server.
  *

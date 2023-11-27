@@ -5,6 +5,8 @@ import lombok.val;
 import java.net.http.HttpClient;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static com.casinthecloud.simpleperf.util.Utils.random;
+
 /**
  * Randomly run test.
  *

@@ -2,6 +2,8 @@ package com.casinthecloud.simpleperf.cas;
 
 import lombok.val;
 
+import static com.casinthecloud.simpleperf.util.Utils.*;
+
 /**
  * A test performing an OIDC login in the CAS server.
  *
