@@ -2,7 +2,6 @@ package com.casinthecloud.simpletest.execution;
 
 import com.casinthecloud.simpletest.test.BaseTest;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 
@@ -19,14 +18,27 @@ import static com.casinthecloud.simpletest.util.Utils.println;
  * @author Jerome LELEU
  * @since 1.0.0
  */
-@RequiredArgsConstructor
 public class Execution {
 
-    private final int nbThreads;
+    private int nbThreads;
 
-    private final int nbIterationsPerThread;
+    private int nbIterationsPerThread;
 
-    private final Supplier<BaseTest> supplierTest;
+    private Supplier<BaseTest> supplierTest;
+
+    public Execution(final Supplier<BaseTest> supplierTest) {
+        this(1, 1, supplierTest);
+    }
+
+    public Execution(final int nbIterationsPerThread, final Supplier<BaseTest> supplierTest) {
+        this(1, nbIterationsPerThread, supplierTest);
+    }
+
+    public Execution(final int nbThreads, final int nbIterationsPerThread, final Supplier<BaseTest> supplierTest) {
+        this.nbThreads = nbThreads;
+        this.nbIterationsPerThread = nbIterationsPerThread;
+        this.supplierTest = supplierTest;
+    }
 
     @Getter
     @Setter
