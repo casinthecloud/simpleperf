@@ -1,11 +1,10 @@
 package com.casinthecloud.simpletest.cas;
 
+import com.casinthecloud.simpletest.execution.Context;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Map;
 
 import static com.casinthecloud.simpletest.util.Utils.addUrlParameter;
 import static com.casinthecloud.simpletest.util.Utils.random;
@@ -35,11 +34,11 @@ public class CasOIDCLoginTest extends InternalCasLoginTest {
         this.casLoginTest = casLoginTest;
     }
 
-    public void run(final Map<String, Object> ctx) throws Exception {
+    public void run(final Context ctx) throws Exception {
 
         authorize(ctx);
 
-        val loginUrl = getLocation();
+        val loginUrl = getLocation(ctx);
         val callbackUrl = this.casLoginTest.login(ctx, loginUrl);
 
         callbackCas(ctx, callbackUrl);
@@ -50,7 +49,7 @@ public class CasOIDCLoginTest extends InternalCasLoginTest {
 
     }
 
-    public void authorize(final Map<String, Object> ctx) throws Exception {
+    public void authorize(final Context ctx) throws Exception {
         val state = "s" + random(10000);
 
         var authorizeUrl = getCasPrefixUrl() + "/oidc/oidcAuthorize";
@@ -60,40 +59,40 @@ public class CasOIDCLoginTest extends InternalCasLoginTest {
         authorizeUrl = addUrlParameter(authorizeUrl, "redirect_uri", getServiceUrl());
         authorizeUrl = addUrlParameter(authorizeUrl, "state", state);
 
-        _request = get(authorizeUrl);
-        execute();
-        assertStatus(302);
+        ctx.setRequest(get(ctx, authorizeUrl));
+        execute(ctx);
+        assertStatus(ctx, 302);
 
-        val casSession = getCookie(DISSESSION);
-        ctx.put(CAS_SESSION, casSession);
+        val casSession = getCookie(ctx, DISSESSION);
+        ctx.getData().put(CAS_SESSION, casSession);
         info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
     }
 
-    public void callbackCas(final Map<String, Object> ctx, final String callbackUrl) throws Exception {
-        val tgc = (Pair<String, String>) ctx.get(TGC);
-        val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);
+    public void callbackCas(final Context ctx, final String callbackUrl) throws Exception {
+        val tgc = (Pair<String, String>) ctx.getData().get(TGC);
+        val casSession = (Pair<String, String>) ctx.getData().get(CAS_SESSION);
 
-        _cookies.put(casSession.getLeft(), casSession.getRight());
-        _cookies.put(tgc.getLeft(), tgc.getRight());
-        _request = get(callbackUrl);
-        execute();
-        assertStatus(302);
+        ctx.getCookies().put(casSession.getLeft(), casSession.getRight());
+        ctx.getCookies().put(tgc.getLeft(), tgc.getRight());
+        ctx.setRequest(get(ctx, callbackUrl));
+        execute(ctx);
+        assertStatus(ctx, 302);
     }
 
-    public void callbackApp(final Map<String, Object> ctx) throws Exception {
-        val callbackAppUrl = getLocation();
-        val tgc = (Pair<String, String>) ctx.get(TGC);
-        val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);
+    public void callbackApp(final Context ctx) throws Exception {
+        val callbackAppUrl = getLocation(ctx);
+        val tgc = (Pair<String, String>) ctx.getData().get(TGC);
+        val casSession = (Pair<String, String>) ctx.getData().get(CAS_SESSION);
 
-        _cookies.put(casSession.getLeft(), casSession.getRight());
-        _cookies.put(TGC, tgc.getRight());
-        _request = get(callbackAppUrl);
-        execute();
-        assertStatus(302);
+        ctx.getCookies().put(casSession.getLeft(), casSession.getRight());
+        ctx.getCookies().put(TGC, tgc.getRight());
+        ctx.setRequest(get(ctx, callbackAppUrl));
+        execute(ctx);
+        assertStatus(ctx, 302);
     }
 
-    public void getAccessToken(final Map<String, Object> ctx) throws Exception {
-        val clientAppUrl = getLocation();
+    public void getAccessToken(final Context ctx) throws Exception {
+        val clientAppUrl = getLocation(ctx);
         val code = substringBetween(clientAppUrl, "code=", "&state");
         info("Code: " + code);
 
@@ -104,8 +103,9 @@ public class CasOIDCLoginTest extends InternalCasLoginTest {
         tokenUrl = addUrlParameter(tokenUrl, "redirect_uri", getServiceUrl());
         tokenUrl = addUrlParameter(tokenUrl, "code", code);
 
-        _request = post(tokenUrl);
-        execute();
-        assertStatus(200);
+        ctx.setRequest(post(ctx, tokenUrl));
+        execute(ctx);
+        assertStatus(ctx, 200);
+        info(ctx.getBody());
     }
 }

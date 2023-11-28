@@ -1,5 +1,6 @@
 package com.casinthecloud.simpletest.util;
 
+import com.casinthecloud.simpletest.execution.Context;
 import com.casinthecloud.simpletest.test.BaseTest;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -7,7 +8,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Map;
 
 /**
  * An utility class.
@@ -21,7 +21,7 @@ public final class Utils {
 
     public static final BaseTest CLEAR_CONTEXT = new BaseTest() {
         @Override
-        public void run(final Map<String, Object> ctx) throws Exception {
+        public void run(final Context ctx) throws Exception {
             info("Clear context");
             ctx.clear();
         }
@@ -29,7 +29,7 @@ public final class Utils {
 
     public static final BaseTest NO_TEST = new BaseTest() {
         @Override
-        public void run(final Map<String, Object> ctx) throws Exception {
+        public void run(final Context ctx) throws Exception {
         }
     };
 

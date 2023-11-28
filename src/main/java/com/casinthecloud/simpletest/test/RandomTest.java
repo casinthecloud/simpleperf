@@ -1,8 +1,7 @@
 package com.casinthecloud.simpletest.test;
 
+import com.casinthecloud.simpletest.execution.Context;
 import lombok.val;
-
-import java.util.Map;
 
 import static com.casinthecloud.simpletest.util.Utils.random;
 
@@ -19,7 +18,7 @@ public class RandomTest extends MultiTest {
     }
 
     @Override
-    public void run(final Map<String, Object> ctx) throws Exception {
+    public void run(final Context ctx) throws Exception {
         val r = random(tests.length);
 
         tests[r].run(ctx);

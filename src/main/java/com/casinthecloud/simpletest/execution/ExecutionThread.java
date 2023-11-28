@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.net.http.HttpClient;
-import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.casinthecloud.simpletest.util.Utils.print;
@@ -46,7 +45,7 @@ public class ExecutionThread extends Thread {
         val smallInterval = test.getSmallInterval();
         val bigInterval = test.getBigInterval();
 
-        val ctx = new HashMap<String, Object>();
+        val ctx = new Context();
 
         var stopError = false;
         var nbError = 0;

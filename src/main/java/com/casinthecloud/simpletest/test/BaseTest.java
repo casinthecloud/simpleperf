@@ -1,5 +1,6 @@
 package com.casinthecloud.simpletest.test;
 
+import com.casinthecloud.simpletest.execution.Context;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -12,7 +13,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.casinthecloud.simpletest.util.Utils.println;
@@ -32,22 +32,6 @@ public abstract class BaseTest {
     @Setter
     private HttpClient client;
 
-    private Long t0;
-
-    protected HttpRequest _request = null;
-
-    protected HttpResponse _response = null;
-
-    protected Map<String, List<String>> _headers = new HashMap<>();
-
-    protected String _body = null;
-
-    protected Map<String, String> _data = new HashMap<>();
-
-    protected Map<String, String> _cookies = new HashMap<>();
-
-    protected Integer _status;
-
     @Getter
     @Setter
     private int maxErrors = 5;
@@ -64,14 +48,14 @@ public abstract class BaseTest {
     @Setter
     private boolean displayInfos;
 
-    public abstract void run(final Map<String, Object> ctx) throws Exception;
+    public abstract void run(final Context ctx) throws Exception;
 
-    protected String getLocation() {
-        return _headers.get("Location").get(0);
+    protected String getLocation(final Context ctx) {
+        return ctx.getHeaders().get("Location").get(0);
     }
 
-    protected Pair<String, String> getCookie(final String name) {
-        val listHeaders = _headers.get("set-cookie");
+    protected Pair<String, String> getCookie(final Context ctx, final String name) {
+        val listHeaders = ctx.getHeaders().get("set-cookie");
         for (val header : listHeaders) {
             if (header.startsWith(name)) {
                 val key = substringBefore(header, "=");
@@ -82,28 +66,28 @@ public abstract class BaseTest {
         return null;
     }
 
-    protected void execute() throws Exception {
-        val theResponse = client.send(_request, HttpResponse.BodyHandlers.ofString());
-        _headers = theResponse.headers().map();
-        _body = theResponse.body();
-        _status = theResponse.statusCode();
-        _response = theResponse;
-        _request = null;
-        _cookies = new HashMap<String, String>();
-        _data = new HashMap<String, String>();
+    protected void execute(final Context ctx) throws Exception {
+        val theResponse = client.send(ctx.getRequest(), HttpResponse.BodyHandlers.ofString());
+        ctx.setHeaders(theResponse.headers().map());
+        ctx.setBody(theResponse.body());
+        ctx.setStatus(theResponse.statusCode());
+        ctx.setResponse(theResponse);
+        ctx.setRequest(null);;
+        ctx.setCookies(new HashMap<String, String>());
+        ctx.setFormParameters(new HashMap<String, String>());
 
         if (displayInfos) {
-            println("Execute => " + _status);
+            println("Execute => " + ctx.getStatus());
         }
     }
 
-    protected HttpRequest post(final String url) throws Exception {
+    protected HttpRequest post(final Context ctx, final String url) throws Exception {
         if (displayInfos) {
             println("POST: " + url);
         }
 
         val formBodyBuilder = new StringBuilder();
-        for (Map.Entry<String, String> singleEntry : _data.entrySet()) {
+        for (Map.Entry<String, String> singleEntry : ctx.getFormParameters().entrySet()) {
             if (formBodyBuilder.length() > 0) {
                 formBodyBuilder.append("&");
             }
@@ -119,9 +103,9 @@ public abstract class BaseTest {
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .timeout(Duration.ofSeconds(10));
 
-        if (_cookies != null && !_cookies.isEmpty()) {
+        if (ctx.getCookies() != null && !ctx.getCookies().isEmpty()) {
             val c = new StringBuilder();
-            for (val cookie : _cookies.entrySet()) {
+            for (val cookie : ctx.getCookies().entrySet()) {
                 c.append(cookie.getKey() + "=" + cookie.getValue() + "; ");
             }
             builder.setHeader("Cookie", c.toString());
@@ -130,7 +114,7 @@ public abstract class BaseTest {
         return builder.build();
     }
 
-    protected HttpRequest get(final String url) throws Exception {
+    protected HttpRequest get(final Context ctx, final String url) throws Exception {
         if (displayInfos) {
             println("GET: " + url);
         }
@@ -140,9 +124,9 @@ public abstract class BaseTest {
                 .GET()
                 .timeout(Duration.ofSeconds(10));
 
-        if (_cookies != null && !_cookies.isEmpty()) {
+        if (ctx.getCookies() != null && !ctx.getCookies().isEmpty()) {
             val c = new StringBuilder();
-            for (val cookie : _cookies.entrySet()) {
+            for (val cookie : ctx.getCookies().entrySet()) {
                 c.append(cookie.getKey() + "=" + cookie.getValue() + "; ");
             }
             builder.setHeader("Cookie", c.toString());
@@ -151,8 +135,8 @@ public abstract class BaseTest {
         return builder.build();
     }
 
-    protected void assertStatus(final int s) {
-        assertTrue("Expected HTTP " + s + " / Received: " + _status, _status != null && _status == s);
+    protected void assertStatus(final Context ctx, final int s) {
+        assertTrue("Expected HTTP " + s + " / Received: " + ctx.getStatus(), ctx.getStatus() != null && ctx.getStatus() == s);
     }
 
     protected void info(final String t) {

@@ -1,11 +1,10 @@
 package com.casinthecloud.simpletest.cas;
 
+import com.casinthecloud.simpletest.execution.Context;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Map;
 
 import static com.casinthecloud.simpletest.util.Utils.addUrlParameter;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
@@ -21,7 +20,7 @@ import static org.apache.commons.lang3.StringUtils.substringBetween;
 @Setter
 public class CasLoginTest extends CasTest {
 
-    public void run(final Map<String, Object> ctx) throws Exception {
+    public void run(final Context ctx) throws Exception {
 
         val loginUrl = addUrlParameter(getCasPrefixUrl() + "/login", "service", getServiceUrl());
         login(ctx, loginUrl);
@@ -30,58 +29,58 @@ public class CasLoginTest extends CasTest {
 
     }
 
-    public String login(final Map<String, Object> ctx, final String loginUrl) throws Exception {
+    public String login(final Context ctx, final String loginUrl) throws Exception {
 
         callLoginPage(ctx, loginUrl);
 
-        if (_status == 200) {
+        if (ctx.getStatus() == 200) {
             postCredentials(ctx, loginUrl);
         }
 
-        assertStatus(302);
+        assertStatus(ctx, 302);
 
-        return getLocation();
+        return getLocation(ctx);
     }
 
-    public void callLoginPage(final Map<String, Object> ctx, final String loginUrl) throws Exception {
-        val tgc = (Pair<String, String>) ctx.get(TGC);
+    public void callLoginPage(final Context ctx, final String loginUrl) throws Exception {
+        val tgc = (Pair<String, String>) ctx.getData().get(TGC);
 
         if (tgc != null) {
             info("Re-use: " + tgc.getLeft() + "=" + tgc.getRight());
-            _cookies.put(getCasCookieName(), tgc.getRight());
+            ctx.getCookies().put(getCasCookieName(), tgc.getRight());
         }
 
-        _request = get(loginUrl);
-        execute();
+        ctx.setRequest(get(ctx, loginUrl));
+        execute(ctx);
     }
 
-    public void postCredentials(final Map<String, Object> ctx, final String loginUrl) throws Exception {
-        val webflow = substringBetween(_body, "name=\"execution\" value=\"", "\"/>");
+    public void postCredentials(final Context ctx, final String loginUrl) throws Exception {
+        val webflow = substringBetween(ctx.getBody(), "name=\"execution\" value=\"", "\"/>");
 
-        _data.put("username", getUsername());
-        _data.put("password", getPassword());
-        _data.put("execution", webflow);
-        _data.put("_eventId", "submit");
-        _data.put("geolocation", "");
+        ctx.getFormParameters().put("username", getUsername());
+        ctx.getFormParameters().put("password", getPassword());
+        ctx.getFormParameters().put("execution", webflow);
+        ctx.getFormParameters().put("_eventId", "submit");
+        ctx.getFormParameters().put("geolocation", "");
 
-        _request = post(loginUrl);
-        execute();
+        ctx.setRequest(post(ctx, loginUrl));
+        execute(ctx);
 
-        val tgc = getCookie(getCasCookieName());
-        ctx.put(TGC, tgc);
+        val tgc = getCookie(ctx, getCasCookieName());
+        ctx.getData().put(TGC, tgc);
         info("Found: " + tgc.getLeft() + "=" + tgc.getRight());
     }
 
-    public void validateSt(final Map<String, Object> ctx) throws Exception {
-        val callbackUrl = getLocation();
+    public void validateSt(final Context ctx) throws Exception {
+        val callbackUrl = getLocation(ctx);
         val st = substringAfter(callbackUrl, "ticket=");
 
         var validateUrl = getCasPrefixUrl() + "/p3/serviceValidate";
         validateUrl = addUrlParameter(validateUrl, "service", getServiceUrl());
         validateUrl = addUrlParameter(validateUrl, "ticket", st);
 
-        _request = get(validateUrl);
-        execute();
-        assertStatus(200);
+        ctx.setRequest(get(ctx, validateUrl));
+        execute(ctx);
+        assertStatus(ctx, 200);
     }
 }

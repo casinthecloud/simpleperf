@@ -1,8 +1,7 @@
 package com.casinthecloud.simpletest.test;
 
+import com.casinthecloud.simpletest.execution.Context;
 import lombok.val;
-
-import java.util.Map;
 
 /**
  * Run all tests.
@@ -17,7 +16,7 @@ public class ChainingTest extends MultiTest {
     }
 
     @Override
-    public void run(final Map<String, Object> ctx) throws Exception {
+    public void run(final Context ctx) throws Exception {
         for (val test : tests) {
             test.run(ctx);
         }
