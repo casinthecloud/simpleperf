@@ -1,9 +1,9 @@
 package com.casinthecloud.simpletest.cas;
 
-import com.casinthecloud.simpletest.test.CasTest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
  */
 @Getter
 @Setter
-public class CasSAML2LoginTest extends CasTest {
+public class CasSAML2LoginTest extends CasLoginTest {
 
     private String serviceUrl = "http://localhost:8081/callback?client_name=SAML2Client";
 
@@ -30,6 +30,16 @@ public class CasSAML2LoginTest extends CasTest {
 
     public void run(final Map<String, Object> ctx) throws Exception {
 
+        postRequest(ctx);
+
+        val loginCasUrl = getLocation();
+        super.login(ctx, loginCasUrl);
+
+        callbackCas(ctx);
+
+    }
+
+    public void postRequest(final Map<String, Object> ctx) throws Exception {
         val samlSsoUrl = getCasPrefixUrl() + "/idp/profile/SAML2/POST/SSO";
         val relayState = getRelayState();
         val serviceUrl = getServiceUrl();
@@ -42,31 +52,25 @@ public class CasSAML2LoginTest extends CasTest {
                 "    </saml2:Issuer>\n" +
                 "</saml2p:AuthnRequest>");
 
-        // post facade SAML
         _data.put("RelayState", relayState);
         _data.put("SAMLRequest", samlRequest);
         _request = post(samlSsoUrl);
         execute();
         assertStatus(302);
-        val loginCasUrl = getLocation();
+
         val casSession = getCookie(JSESSIONID);
+        ctx.put(CAS_SESSION, casSession);
         info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
+    }
 
-        // call login page
-        _request = get(loginCasUrl);
-        execute();
-        assertStatus(200);
+    public void callbackCas(final Map<String, Object> ctx) throws Exception {
+        val callbackUrl = getLocation();
+        val tgc = (Pair<String, String>) ctx.get(TGC);
+        val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);
 
-        // post credentials
-        executePostCasCredentials(loginCasUrl);
-        val samlCallbackUrl = getLocation();
-        val tgc = getCookie(TGC);
-        info("Found TGC: " + tgc.getRight());
-
-        // call callback
         _cookies.put(casSession.getLeft(), casSession.getRight());
-        _cookies.put(TGC, tgc.getRight());
-        _request = get(samlCallbackUrl);
+        _cookies.put(tgc.getLeft(), tgc.getRight());
+        _request = get(callbackUrl);
         execute();
         assertStatus(200);
 
@@ -74,6 +78,5 @@ public class CasSAML2LoginTest extends CasTest {
         val samlResponse = htmlDecode(substringBetween(_body, "\"SAMLResponse\" value=\"", "\"/>"));
         assertEquals(serviceUrl, pac4jCallbackUrl);
         assertNotNull(base64Decode(samlResponse));
-
     }
 }

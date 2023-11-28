@@ -2,9 +2,6 @@ package com.casinthecloud.simpletest.test;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
-
-import static org.apache.commons.lang3.StringUtils.substringBetween;
 
 /**
  * A test for CAS.
@@ -19,6 +16,7 @@ public abstract class CasTest extends WebTest {
 
     protected static final String TGC = "TGC";
     protected static final String DISSESSION = "DISSESSION";
+    protected static final String CAS_SESSION = "CAS_SESSION";
 
     private String casPrefixUrl = "http://localhost:8080/cas";
 
@@ -27,17 +25,4 @@ public abstract class CasTest extends WebTest {
     private String username = "jleleu";
 
     private String password = "jleleu";
-
-    protected void executePostCasCredentials(final String casLoginUrl) throws Exception {
-        val webflow = substringBetween(_body, "name=\"execution\" value=\"", "\"/>");
-
-        _data.put("username", getUsername());
-        _data.put("password", getPassword());
-        _data.put("execution", webflow);
-        _data.put("_eventId", "submit");
-        _data.put("geolocation", "");
-        _request = post(casLoginUrl);
-        execute();
-        assertStatus(302);
-    }
 }
