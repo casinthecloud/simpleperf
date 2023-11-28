@@ -13,7 +13,7 @@ import java.net.http.HttpClient;
  */
 @Getter
 @Setter
-public abstract class InternalCasLoginTest extends CasTest {
+public abstract class EmbeddedCasLoginTest extends CasTest {
 
     protected CasLoginTest casLoginTest;
 

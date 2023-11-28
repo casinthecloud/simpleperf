@@ -18,7 +18,7 @@ import static org.apache.commons.lang3.StringUtils.substringBetween;
  */
 @Getter
 @Setter
-public class CasOIDCLoginTest extends InternalCasLoginTest {
+public class CasOIDCLoginTest extends EmbeddedCasLoginTest {
 
     private String clientId = "myclient";
 
@@ -38,10 +38,9 @@ public class CasOIDCLoginTest extends InternalCasLoginTest {
 
         authorize(ctx);
 
-        val loginUrl = getLocation(ctx);
-        val callbackUrl = this.casLoginTest.login(ctx, loginUrl);
+        casLoginTest.run(ctx);
 
-        callbackCas(ctx, callbackUrl);
+        callbackCas(ctx);
 
         callbackApp(ctx);
 
@@ -49,7 +48,7 @@ public class CasOIDCLoginTest extends InternalCasLoginTest {
 
     }
 
-    public void authorize(final Context ctx) throws Exception {
+    private void authorize(final Context ctx) throws Exception {
         val state = "s" + random(10000);
 
         var authorizeUrl = getCasPrefixUrl() + "/oidc/oidcAuthorize";
@@ -68,18 +67,19 @@ public class CasOIDCLoginTest extends InternalCasLoginTest {
         info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
     }
 
-    public void callbackCas(final Context ctx, final String callbackUrl) throws Exception {
+    private void callbackCas(final Context ctx) throws Exception {
+        val callbackCasUrl = getLocation(ctx);
         val tgc = (Pair<String, String>) ctx.getData().get(TGC);
         val casSession = (Pair<String, String>) ctx.getData().get(CAS_SESSION);
 
         ctx.getCookies().put(casSession.getLeft(), casSession.getRight());
         ctx.getCookies().put(tgc.getLeft(), tgc.getRight());
-        ctx.setRequest(get(ctx, callbackUrl));
+        ctx.setRequest(get(ctx, callbackCasUrl));
         execute(ctx);
         assertStatus(ctx, 302);
     }
 
-    public void callbackApp(final Context ctx) throws Exception {
+    private void callbackApp(final Context ctx) throws Exception {
         val callbackAppUrl = getLocation(ctx);
         val tgc = (Pair<String, String>) ctx.getData().get(TGC);
         val casSession = (Pair<String, String>) ctx.getData().get(CAS_SESSION);
@@ -91,7 +91,7 @@ public class CasOIDCLoginTest extends InternalCasLoginTest {
         assertStatus(ctx, 302);
     }
 
-    public void getAccessToken(final Context ctx) throws Exception {
+    private void getAccessToken(final Context ctx) throws Exception {
         val clientAppUrl = getLocation(ctx);
         val code = substringBetween(clientAppUrl, "code=", "&state");
         info("Code: " + code);

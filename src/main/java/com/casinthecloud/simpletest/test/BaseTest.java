@@ -51,7 +51,11 @@ public abstract class BaseTest {
     public abstract void run(final Context ctx) throws Exception;
 
     protected String getLocation(final Context ctx) {
-        return ctx.getHeaders().get("Location").get(0);
+        val location = ctx.getHeaders().get("Location");
+        if (location != null) {
+            return location.get(0);
+        }
+        return null;
     }
 
     protected Pair<String, String> getCookie(final Context ctx, final String name) {
