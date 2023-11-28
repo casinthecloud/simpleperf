@@ -22,20 +22,28 @@ import static org.junit.Assert.assertNotNull;
  */
 @Getter
 @Setter
-public class CasSAML2LoginTest extends CasLoginTest {
+public class CasSAML2LoginTest extends InternalCasLoginTest {
 
     private String serviceUrl = "http://localhost:8081/callback?client_name=SAML2Client";
 
     private String relayState = "https://specialurl";
+
+    public CasSAML2LoginTest() {
+        this(new CasLoginTest());
+    }
+
+    public CasSAML2LoginTest(final CasLoginTest casLoginTest) {
+        this.casLoginTest = casLoginTest;
+    }
 
     public void run(final Map<String, Object> ctx) throws Exception {
 
         postRequest(ctx);
 
         val loginCasUrl = getLocation();
-        super.login(ctx, loginCasUrl);
+        val callbackUrl = this.casLoginTest.login(ctx, loginCasUrl);
 
-        callbackCas(ctx);
+        callbackCas(ctx, callbackUrl);
 
     }
 
@@ -63,8 +71,7 @@ public class CasSAML2LoginTest extends CasLoginTest {
         info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
     }
 
-    public void callbackCas(final Map<String, Object> ctx) throws Exception {
-        val callbackUrl = getLocation();
+    public void callbackCas(final Map<String, Object> ctx, final String callbackUrl) throws Exception {
         val tgc = (Pair<String, String>) ctx.get(TGC);
         val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);
 

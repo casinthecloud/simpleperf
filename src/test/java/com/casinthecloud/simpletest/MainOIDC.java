@@ -4,7 +4,7 @@ import com.casinthecloud.simpletest.cas.CasOIDCLoginTest;
 import com.casinthecloud.simpletest.execution.Execution;
 import lombok.val;
 
-public class Main {
+public class MainOIDC {
 
     public static void main(final String... args) throws Exception {
         new Execution(() -> {

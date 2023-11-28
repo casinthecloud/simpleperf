@@ -1,6 +1,5 @@
 package com.casinthecloud.simpletest.cas;
 
-import com.casinthecloud.simpletest.test.CasTest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -22,8 +21,6 @@ import static org.apache.commons.lang3.StringUtils.substringBetween;
 @Setter
 public class CasLoginTest extends CasTest {
 
-    private String serviceUrl = "http://localhost:8081/";
-
     public void run(final Map<String, Object> ctx) throws Exception {
 
         val loginUrl = addUrlParameter(getCasPrefixUrl() + "/login", "service", getServiceUrl());
@@ -33,7 +30,7 @@ public class CasLoginTest extends CasTest {
 
     }
 
-    public void login(final Map<String, Object> ctx, final String loginUrl) throws Exception {
+    public String login(final Map<String, Object> ctx, final String loginUrl) throws Exception {
 
         callLoginPage(ctx, loginUrl);
 
@@ -42,6 +39,8 @@ public class CasLoginTest extends CasTest {
         }
 
         assertStatus(302);
+
+        return getLocation();
     }
 
     public void callLoginPage(final Map<String, Object> ctx, final String loginUrl) throws Exception {

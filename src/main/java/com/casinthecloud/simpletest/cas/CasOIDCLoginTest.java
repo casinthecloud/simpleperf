@@ -19,7 +19,7 @@ import static org.apache.commons.lang3.StringUtils.substringBetween;
  */
 @Getter
 @Setter
-public class CasOIDCLoginTest extends CasLoginTest {
+public class CasOIDCLoginTest extends InternalCasLoginTest {
 
     private String clientId = "myclient";
 
@@ -27,14 +27,22 @@ public class CasOIDCLoginTest extends CasLoginTest {
 
     private String scope = "openid email profile";
 
+    public CasOIDCLoginTest() {
+        this(new CasLoginTest());
+    }
+
+    public CasOIDCLoginTest(final CasLoginTest casLoginTest) {
+        this.casLoginTest = casLoginTest;
+    }
+
     public void run(final Map<String, Object> ctx) throws Exception {
 
         authorize(ctx);
 
         val loginUrl = getLocation();
-        super.login(ctx, loginUrl);
+        val callbackUrl = this.casLoginTest.login(ctx, loginUrl);
 
-        callbackCas(ctx);
+        callbackCas(ctx, callbackUrl);
 
         callbackApp(ctx);
 
@@ -61,8 +69,7 @@ public class CasOIDCLoginTest extends CasLoginTest {
         info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
     }
 
-    public void callbackCas(final Map<String, Object> ctx) throws Exception {
-        val callbackUrl = getLocation();
+    public void callbackCas(final Map<String, Object> ctx, final String callbackUrl) throws Exception {
         val tgc = (Pair<String, String>) ctx.get(TGC);
         val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);
 
