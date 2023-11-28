@@ -6,11 +6,9 @@ import lombok.Setter;
 import lombok.val;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
-import static com.casinthecloud.simpletest.util.Utils.print;
-import static com.casinthecloud.simpletest.util.Utils.println;
+import static com.casinthecloud.simpletest.util.Utils.*;
 
 /**
  * The main class to use to launch the execution of a test.
@@ -38,7 +36,7 @@ public class Execution {
         this.nbThreads = nbThreads;
         this.nbIterationsPerThread = nbIterationsPerThread;
         this.supplierTest = supplierTest;
-        if (nbThreads == 1 && nbIterationsPerThread < 100) {
+        if (nbThreads == 1 && nbIterationsPerThread < NB_ITERATIONS_LIMIT) {
             displayInfos = true;
             displayErrors = true;
         }
@@ -53,9 +51,12 @@ public class Execution {
     private boolean displayErrors;
 
     public void launch() throws Exception {
-        val time = new AtomicLong(0);
         val completed = new AtomicInteger(0);
 
+        String typeText = "Performance";
+        if (nbIterationsPerThread < NB_ITERATIONS_LIMIT) {
+            typeText = "Functional";
+        }
         String textThread = nbThreads + " thread";
         if (nbThreads > 1) {
             textThread += "s";
@@ -68,24 +69,26 @@ public class Execution {
         } else {
             textIteration = nbIterationsPerThread + " iterations per thread";
         }
-        println("Execution started: " + textThread + ", " + textIteration);
+        println(typeText + " execution started: " + textThread + ", " + textIteration);
         if (!displayInfos) {
             print("<");
         }
 
+        val t0 = System.currentTimeMillis();
         for (var i = 0; i < nbThreads; i++) {
             val test = supplierTest.get();
-            test.setTime(time);
-            val t = new ExecutionThread(i, nbIterationsPerThread, test, completed, displayInfos, displayErrors);
-            t.start();
+            val executionThread = new ExecutionThread(i, nbIterationsPerThread, test, completed, displayInfos, displayErrors);
+            executionThread.start();
         }
 
         while (completed.get() < nbThreads) {}
+        val t1 = System.currentTimeMillis();
+
         if (!displayInfos) {
             println(">");
         }
 
-        val finalTime = time.get();
+        val finalTime = t1 - t0;
         if (finalTime >= 5000) {
             println("Execution ended and took: " + finalTime/1000 + " s");
         } else {

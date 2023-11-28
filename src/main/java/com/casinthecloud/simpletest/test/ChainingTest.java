@@ -10,7 +10,7 @@ import java.util.Map;
  * @author Jerome LELEU
  * @since 1.0.0
  */
-public class ChainingTest extends MultipleTest {
+public class ChainingTest extends MultiTest {
 
     public ChainingTest(final BaseTest... tests) {
         this.tests = tests;

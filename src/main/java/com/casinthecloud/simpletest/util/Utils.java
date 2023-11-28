@@ -17,6 +17,8 @@ import java.util.Map;
  */
 public final class Utils {
 
+    public static final int NB_ITERATIONS_LIMIT = 50;
+
     public static final BaseTest CLEAR_CONTEXT = new BaseTest() {
         @Override
         public void run(final Map<String, Object> ctx) throws Exception {

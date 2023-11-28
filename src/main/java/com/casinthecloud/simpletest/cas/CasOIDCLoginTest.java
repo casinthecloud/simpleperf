@@ -27,7 +27,6 @@ public class CasOIDCLoginTest extends CasLoginTest {
     private String scope = "openid email profile";
 
     public void run(final Map<String, Object> ctx) throws Exception {
-        startTimer();
 
         val clientId = getClientId();
         val serviceUrl = getServiceUrl();
@@ -82,6 +81,5 @@ public class CasOIDCLoginTest extends CasLoginTest {
         execute();
         assertStatus(200);
 
-        saveTimer();
     }
 }

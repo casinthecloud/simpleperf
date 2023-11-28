@@ -14,7 +14,6 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static com.casinthecloud.simpletest.util.Utils.println;
 import static com.casinthecloud.simpletest.util.Utils.urlEncode;
@@ -34,9 +33,6 @@ public abstract class BaseTest {
     private HttpClient client;
 
     private Long t0;
-
-    @Setter
-    private AtomicLong time;
 
     protected HttpRequest _request = null;
 
@@ -69,16 +65,6 @@ public abstract class BaseTest {
     private boolean displayInfos;
 
     public abstract void run(final Map<String, Object> ctx) throws Exception;
-
-    protected void saveTimer() {
-        long t1 = System.currentTimeMillis();
-        time.addAndGet(t1 - t0);
-        t0 = null;
-    }
-
-    protected void startTimer() {
-        t0 = System.currentTimeMillis();
-    }
 
     protected String getLocation() {
         return _headers.get("Location").get(0);

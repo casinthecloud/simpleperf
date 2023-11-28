@@ -12,7 +12,7 @@ import static com.casinthecloud.simpletest.util.Utils.random;
  * @author Jerome LELEU
  * @since 1.0.0
  */
-public class RandomTest extends MultipleTest {
+public class RandomTest extends MultiTest {
 
     public RandomTest(final BaseTest... tests) {
         this.tests = tests;

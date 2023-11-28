@@ -25,7 +25,6 @@ public class CasLoginTest extends CasTest {
 
     public void run(final Map<String, Object> ctx) throws Exception {
 
-        startTimer();
         val serviceUrl = getServiceUrl();
 
         var loginUrl = getCasPrefixUrl() + "/login";
@@ -33,7 +32,7 @@ public class CasLoginTest extends CasTest {
         var tgc = (Pair<String, String>) ctx.get(TGC);
 
         if (tgc != null) {
-            info("Re-use " + tgc.getLeft() + " : " + tgc.getRight());
+            info("Re-use: " + tgc.getLeft() + "=" + tgc.getRight());
             _cookies.put(getCasCookieName(), tgc.getRight());
         }
         _request = get(loginUrl);
@@ -43,7 +42,7 @@ public class CasLoginTest extends CasTest {
             executePostCasCredentials(loginUrl);
             tgc = getCookie(getCasCookieName());
             ctx.put(TGC, tgc);
-            info("Found " + tgc.getLeft() + " : " + tgc.getRight());
+            info("Found: " + tgc.getLeft() + "=" + tgc.getRight());
 
         } else {
             assertStatus(302);
@@ -58,6 +57,6 @@ public class CasLoginTest extends CasTest {
         _request = get(validateUrl);
         execute();
         assertStatus(200);
-        saveTimer();
+
     }
 }

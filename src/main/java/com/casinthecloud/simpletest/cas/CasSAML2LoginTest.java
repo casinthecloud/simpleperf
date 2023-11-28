@@ -30,8 +30,6 @@ public class CasSAML2LoginTest extends CasTest {
 
     public void run(final Map<String, Object> ctx) throws Exception {
 
-        startTimer();
-
         val samlSsoUrl = getCasPrefixUrl() + "/idp/profile/SAML2/POST/SSO";
         val relayState = getRelayState();
         val serviceUrl = getServiceUrl();
@@ -76,8 +74,6 @@ public class CasSAML2LoginTest extends CasTest {
         val samlResponse = htmlDecode(substringBetween(_body, "\"SAMLResponse\" value=\"", "\"/>"));
         assertEquals(serviceUrl, pac4jCallbackUrl);
         assertNotNull(base64Decode(samlResponse));
-
-        saveTimer();
 
     }
 }
