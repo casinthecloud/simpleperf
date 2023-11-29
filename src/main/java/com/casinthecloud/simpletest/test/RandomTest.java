@@ -6,7 +6,7 @@ import lombok.val;
 import static com.casinthecloud.simpletest.util.Utils.random;
 
 /**
- * Randomly run of the tests.
+ * Randomly run one of the tests.
  *
  * @author Jerome LELEU
  * @since 1.0.0
@@ -19,8 +19,10 @@ public class RandomTest extends MultiTest {
 
     @Override
     public void run(final Context ctx) throws Exception {
-        val r = random(tests.length);
+        if (tests != null) {
+            val r = random(tests.length);
 
-        tests[r].run(ctx);
+            tests[r].run(ctx);
+        }
     }
 }

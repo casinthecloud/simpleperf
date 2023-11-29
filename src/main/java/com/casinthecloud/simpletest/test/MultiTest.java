@@ -15,14 +15,20 @@ public abstract class MultiTest extends BaseTest {
     protected BaseTest[] tests;
 
     public void setClient(final HttpClient client) {
-        for (val test : tests) {
-            test.setClient(client);
+        super.setClient(client);
+        if (tests != null) {
+            for (val test : tests) {
+                test.setClient(client);
+            }
         }
     }
 
     public void setDisplayInfos(final boolean displayInfos) {
-        for (val test : tests) {
-            test.setDisplayInfos(displayInfos);
+        super.setDisplayInfos(displayInfos);
+        if (tests != null) {
+            for (val test : tests) {
+                test.setDisplayInfos(displayInfos);
+            }
         }
     }
 }

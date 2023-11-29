@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
  */
 @Getter
 @Setter
-public class CasSAML2LoginTest extends EmbeddedCasLoginTest {
+public class CasSAML2LoginTest extends CasTest {
 
     private String serviceUrl = "http://localhost:8081/callback?client_name=SAML2Client";
 
@@ -32,21 +32,21 @@ public class CasSAML2LoginTest extends EmbeddedCasLoginTest {
         this(new CasLoginTest());
     }
 
-    public CasSAML2LoginTest(final CasLoginTest casLoginTest) {
-        this.casLoginTest = casLoginTest;
+    public CasSAML2LoginTest(final CasTest casTest) {
+        this.tests = new CasTest[] { casTest };
     }
 
     public void run(final Context ctx) throws Exception {
 
         postRequest(ctx);
 
-        this.casLoginTest.run(ctx);
+        super.run(ctx);
 
         callbackCas(ctx);
 
     }
 
-    private void postRequest(final Context ctx) throws Exception {
+    protected void postRequest(final Context ctx) throws Exception {
         val samlSsoUrl = getCasPrefixUrl() + "/idp/profile/SAML2/POST/SSO";
         val relayState = getRelayState();
         val serviceUrl = getServiceUrl();
@@ -70,7 +70,7 @@ public class CasSAML2LoginTest extends EmbeddedCasLoginTest {
         info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
     }
 
-    private void callbackCas(final Context ctx) throws Exception {
+    protected void callbackCas(final Context ctx) throws Exception {
         val callbackUrl = getLocation(ctx);
         val tgc = (Pair<String, String>) ctx.get(TGC);
         val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);

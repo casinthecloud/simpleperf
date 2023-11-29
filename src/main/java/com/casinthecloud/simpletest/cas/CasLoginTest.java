@@ -30,7 +30,7 @@ public class CasLoginTest extends CasTest {
 
     }
 
-    private void login(final Context ctx, final String loginUrl) throws Exception {
+    protected void login(final Context ctx, final String loginUrl) throws Exception {
 
         callLoginPage(ctx, loginUrl);
 
@@ -42,7 +42,7 @@ public class CasLoginTest extends CasTest {
 
     }
 
-    private void callLoginPage(final Context ctx, final String loginUrl) throws Exception {
+    protected void callLoginPage(final Context ctx, final String loginUrl) throws Exception {
         val tgc = (Pair<String, String>) ctx.get(TGC);
 
         if (tgc != null) {
@@ -54,7 +54,7 @@ public class CasLoginTest extends CasTest {
         execute(ctx);
     }
 
-    private void postCredentials(final Context ctx, final String loginUrl) throws Exception {
+    protected void postCredentials(final Context ctx, final String loginUrl) throws Exception {
         val webflow = substringBetween(ctx.getBody(), "name=\"execution\" value=\"", "\"/>");
 
         ctx.getFormParameters().put("username", getUsername());

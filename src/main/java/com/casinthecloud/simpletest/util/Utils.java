@@ -2,6 +2,8 @@ package com.casinthecloud.simpletest.util;
 
 import com.casinthecloud.simpletest.execution.Context;
 import com.casinthecloud.simpletest.test.BaseTest;
+import com.casinthecloud.simpletest.test.ChainingTest;
+import com.casinthecloud.simpletest.test.RandomTest;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.net.URLDecoder;
@@ -32,6 +34,14 @@ public final class Utils {
         public void run(final Context ctx) throws Exception {
         }
     };
+
+    public static RandomTest OR(final BaseTest... tests) {
+        return new RandomTest(tests);
+    }
+
+    public static ChainingTest AND(final BaseTest... tests) {
+        return new ChainingTest(tests);
+    }
 
     public static int random(final int max) {
         return (int)(Math.random() * max);

@@ -3,11 +3,14 @@
 ## Functional testing
 
 ```java
-public class Main {
+public class MainCAS {
 
     public static void main(final String... args) throws Exception {
         new Execution(5, () -> {
-            return new RandomTest(new CasLoginTest(), new CasLoginTest(), CLEAR_CONTEXT);
+            return OR(
+                    AND(new CasLoginTest(), new CasValidateTest()),
+                    CLEAR_CONTEXT
+            );
         }).launch();
     }
 }

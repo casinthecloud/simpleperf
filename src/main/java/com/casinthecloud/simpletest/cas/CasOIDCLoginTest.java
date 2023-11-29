@@ -8,7 +8,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import static com.casinthecloud.simpletest.util.Utils.addUrlParameter;
 import static com.casinthecloud.simpletest.util.Utils.random;
-import static org.apache.commons.lang3.StringUtils.substringBetween;
 
 /**
  * A test performing an OIDC login in the CAS server.
@@ -18,11 +17,9 @@ import static org.apache.commons.lang3.StringUtils.substringBetween;
  */
 @Getter
 @Setter
-public class CasOIDCLoginTest extends EmbeddedCasLoginTest {
+public class CasOIDCLoginTest extends CasTest {
 
     private String clientId = "myclient";
-
-    private String clientSecret = "mysecret";
 
     private String scope = "openid email profile";
 
@@ -30,25 +27,23 @@ public class CasOIDCLoginTest extends EmbeddedCasLoginTest {
         this(new CasLoginTest());
     }
 
-    public CasOIDCLoginTest(final CasLoginTest casLoginTest) {
-        this.casLoginTest = casLoginTest;
+    public CasOIDCLoginTest(final CasTest casTest) {
+        this.tests = new CasTest[] { casTest };
     }
 
     public void run(final Context ctx) throws Exception {
 
         authorize(ctx);
 
-        casLoginTest.run(ctx);
+        super.run(ctx);
 
         callbackCas(ctx);
 
         callbackApp(ctx);
 
-        getAccessToken(ctx);
-
     }
 
-    private void authorize(final Context ctx) throws Exception {
+    protected void authorize(final Context ctx) throws Exception {
         val state = "s" + random(10000);
 
         var authorizeUrl = getCasPrefixUrl() + "/oidc/oidcAuthorize";
@@ -67,7 +62,7 @@ public class CasOIDCLoginTest extends EmbeddedCasLoginTest {
         info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
     }
 
-    private void callbackCas(final Context ctx) throws Exception {
+    protected void callbackCas(final Context ctx) throws Exception {
         val callbackCasUrl = getLocation(ctx);
         val tgc = (Pair<String, String>) ctx.get(TGC);
         val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);
@@ -79,7 +74,7 @@ public class CasOIDCLoginTest extends EmbeddedCasLoginTest {
         assertStatus(ctx, 302);
     }
 
-    private void callbackApp(final Context ctx) throws Exception {
+    protected void callbackApp(final Context ctx) throws Exception {
         val callbackAppUrl = getLocation(ctx);
         val tgc = (Pair<String, String>) ctx.get(TGC);
         val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);
@@ -89,23 +84,5 @@ public class CasOIDCLoginTest extends EmbeddedCasLoginTest {
         ctx.setRequest(get(ctx, callbackAppUrl));
         execute(ctx);
         assertStatus(ctx, 302);
-    }
-
-    private void getAccessToken(final Context ctx) throws Exception {
-        val clientAppUrl = getLocation(ctx);
-        val code = substringBetween(clientAppUrl, "code=", "&state");
-        info("Code: " + code);
-
-        var tokenUrl = getCasPrefixUrl() + "/oidc/token";
-        tokenUrl = addUrlParameter(tokenUrl, "grant_type", "authorization_code");
-        tokenUrl = addUrlParameter(tokenUrl, "client_id", getClientId());
-        tokenUrl = addUrlParameter(tokenUrl, "client_secret", getClientSecret());
-        tokenUrl = addUrlParameter(tokenUrl, "redirect_uri", getServiceUrl());
-        tokenUrl = addUrlParameter(tokenUrl, "code", code);
-
-        ctx.setRequest(post(ctx, tokenUrl));
-        execute(ctx);
-        assertStatus(ctx, 200);
-        info(ctx.getBody());
     }
 }

@@ -1,6 +1,6 @@
 package com.casinthecloud.simpletest.cas;
 
-import com.casinthecloud.simpletest.test.WebTest;
+import com.casinthecloud.simpletest.test.ChainingTest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,8 +13,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class CasTest extends WebTest {
+public abstract class CasTest extends ChainingTest {
 
+    protected static final String JSESSIONID = "JSESSIONID";
     protected static final String TGC = "TGC";
     protected static final String DISSESSION = "DISSESSION";
     protected static final String CAS_SESSION = "CAS_SESSION";
