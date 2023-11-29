@@ -63,4 +63,14 @@ public abstract class CasTest extends ChainingTest {
             ctx.getCookies().put(getCasCookieName(), tgc.getRight());
         }
     }
+
+    protected void callback(final Context ctx) throws Exception {
+        val callbackUrl = getLocation(ctx);
+
+        useSsoSession(ctx);
+        useCasSession(ctx);
+
+        ctx.setRequest(get(ctx, callbackUrl));
+        execute(ctx);
+    }
 }

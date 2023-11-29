@@ -32,10 +32,11 @@ public class CasDelegateTest extends CasLoginTest {
 
         super.run(ctx);
 
-        callbackCas(ctx);
+        callback(ctx);
+        assertStatus(ctx, 302);
 
-        callbackCas(ctx);
-
+        callback(ctx);
+        assertStatus(ctx, 302);
     }
 
     protected void delegate(final Context ctx, final String loginUrl) throws Exception {
@@ -49,15 +50,5 @@ public class CasDelegateTest extends CasLoginTest {
         execute(ctx);
 
         saveCasSession(ctx);
-    }
-
-    protected void callbackCas(final Context ctx) throws Exception {
-        val callbackUrl = getLocation(ctx);
-
-        useCasSession(ctx);
-
-        ctx.setRequest(get(ctx, callbackUrl));
-        execute(ctx);
-        assertStatus(ctx, 302);
     }
 }

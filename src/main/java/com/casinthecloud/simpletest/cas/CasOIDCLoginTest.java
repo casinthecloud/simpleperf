@@ -37,9 +37,10 @@ public class CasOIDCLoginTest extends CasTest {
         super.run(ctx);
 
         callback(ctx);
+        assertStatus(ctx, 302);
 
         callback(ctx);
-
+        assertStatus(ctx, 302);
     }
 
     protected void authorize(final Context ctx) throws Exception {
@@ -57,16 +58,5 @@ public class CasOIDCLoginTest extends CasTest {
         assertStatus(ctx, 302);
 
         saveCasSession(ctx);
-    }
-
-    protected void callback(final Context ctx) throws Exception {
-        val callbackUrl = getLocation(ctx);
-
-        useSsoSession(ctx);
-        useCasSession(ctx);
-
-        ctx.setRequest(get(ctx, callbackUrl));
-        execute(ctx);
-        assertStatus(ctx, 302);
     }
 }

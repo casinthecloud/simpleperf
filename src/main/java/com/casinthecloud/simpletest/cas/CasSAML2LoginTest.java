@@ -41,7 +41,13 @@ public class CasSAML2LoginTest extends CasTest {
 
         super.run(ctx);
 
-        callbackCas(ctx);
+        callback(ctx);
+        assertStatus(ctx, 200);
+
+        val pac4jCallbackUrl = htmlDecode(substringBetween(ctx.getBody(), "<form action=\"", "\" met"));
+        val samlResponse = htmlDecode(substringBetween(ctx.getBody(), "\"SAMLResponse\" value=\"", "\"/>"));
+        assertEquals(serviceUrl, pac4jCallbackUrl);
+        assertNotNull(base64Decode(samlResponse));
 
     }
 
@@ -65,21 +71,5 @@ public class CasSAML2LoginTest extends CasTest {
         assertStatus(ctx, 302);
 
         saveCasSession(ctx);
-    }
-
-    protected void callbackCas(final Context ctx) throws Exception {
-        val callbackUrl = getLocation(ctx);
-
-        useSsoSession(ctx);
-        useCasSession(ctx);
-
-        ctx.setRequest(get(ctx, callbackUrl));
-        execute(ctx);
-        assertStatus(ctx, 200);
-
-        val pac4jCallbackUrl = htmlDecode(substringBetween(ctx.getBody(), "<form action=\"", "\" met"));
-        val samlResponse = htmlDecode(substringBetween(ctx.getBody(), "\"SAMLResponse\" value=\"", "\"/>"));
-        assertEquals(serviceUrl, pac4jCallbackUrl);
-        assertNotNull(base64Decode(samlResponse));
     }
 }
