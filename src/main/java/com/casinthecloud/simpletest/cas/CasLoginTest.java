@@ -43,7 +43,7 @@ public class CasLoginTest extends CasTest {
     }
 
     private void callLoginPage(final Context ctx, final String loginUrl) throws Exception {
-        val tgc = (Pair<String, String>) ctx.getData().get(TGC);
+        val tgc = (Pair<String, String>) ctx.get(TGC);
 
         if (tgc != null) {
             info("Re-use: " + tgc.getLeft() + "=" + tgc.getRight());
@@ -67,7 +67,7 @@ public class CasLoginTest extends CasTest {
         execute(ctx);
 
         val tgc = getCookie(ctx, getCasCookieName());
-        ctx.getData().put(TGC, tgc);
+        ctx.put(TGC, tgc);
         info("Found: " + tgc.getLeft() + "=" + tgc.getRight());
     }
 }

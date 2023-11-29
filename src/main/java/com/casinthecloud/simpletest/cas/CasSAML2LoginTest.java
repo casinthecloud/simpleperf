@@ -66,14 +66,14 @@ public class CasSAML2LoginTest extends EmbeddedCasLoginTest {
         assertStatus(ctx, 302);
 
         val casSession = getCookie(ctx, JSESSIONID);
-        ctx.getData().put(CAS_SESSION, casSession);
+        ctx.put(CAS_SESSION, casSession);
         info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
     }
 
     private void callbackCas(final Context ctx) throws Exception {
         val callbackUrl = getLocation(ctx);
-        val tgc = (Pair<String, String>) ctx.getData().get(TGC);
-        val casSession = (Pair<String, String>) ctx.getData().get(CAS_SESSION);
+        val tgc = (Pair<String, String>) ctx.get(TGC);
+        val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);
 
         ctx.getCookies().put(casSession.getLeft(), casSession.getRight());
         ctx.getCookies().put(tgc.getLeft(), tgc.getRight());

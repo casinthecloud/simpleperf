@@ -12,22 +12,34 @@ import java.util.Map;
 /**
  * The context of an execution.
  */
-@Getter
-@Setter
 public class Context {
 
+    @Getter
+    @Setter
     private HttpRequest request = null;
 
+    @Getter
+    @Setter
     private HttpResponse response = null;
 
+    @Getter
+    @Setter
     private Map<String, List<String>> headers = new HashMap<>();
 
+    @Getter
+    @Setter
     private String body = null;
 
+    @Getter
+    @Setter
     private Map<String, String> formParameters = new HashMap<>();
 
+    @Getter
+    @Setter
     private Map<String, String> cookies = new HashMap<>();
 
+    @Getter
+    @Setter
     private Integer status = null;
 
     private Map<String, Object> data = new HashMap<>();
@@ -41,5 +53,13 @@ public class Context {
         cookies.clear();
         status = null;
         data.clear();;
+    }
+
+    public Object get(final String key) {
+        return data.get(key);
+    }
+
+    public void put(final String key, final Object value) {
+        data.put(key, value);
     }
 }
