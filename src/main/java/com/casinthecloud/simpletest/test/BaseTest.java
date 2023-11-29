@@ -29,6 +29,10 @@ import static org.junit.Assert.assertTrue;
  */
 public abstract class BaseTest {
 
+    private static int SEQ = 1;
+
+    protected int testId;
+
     @Setter
     private HttpClient client;
 
@@ -47,6 +51,10 @@ public abstract class BaseTest {
     @Getter
     @Setter
     private boolean displayInfos;
+
+    protected BaseTest() {
+        testId = SEQ++;
+    }
 
     public abstract void run(final Context ctx) throws Exception;
 

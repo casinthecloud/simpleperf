@@ -4,7 +4,6 @@ import com.casinthecloud.simpletest.execution.Context;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -65,18 +64,15 @@ public class CasSAML2LoginTest extends CasTest {
         execute(ctx);
         assertStatus(ctx, 302);
 
-        val casSession = getCookie(ctx, JSESSIONID);
-        ctx.put(CAS_SESSION, casSession);
-        info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
+        saveCasSession(ctx);
     }
 
     protected void callbackCas(final Context ctx) throws Exception {
         val callbackUrl = getLocation(ctx);
-        val tgc = (Pair<String, String>) ctx.get(TGC);
-        val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);
 
-        ctx.getCookies().put(casSession.getLeft(), casSession.getRight());
-        ctx.getCookies().put(tgc.getLeft(), tgc.getRight());
+        useSsoSession(ctx);
+        useCasSession(ctx);
+
         ctx.setRequest(get(ctx, callbackUrl));
         execute(ctx);
         assertStatus(ctx, 200);

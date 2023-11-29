@@ -4,7 +4,6 @@ import com.casinthecloud.simpletest.execution.Context;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import org.apache.commons.lang3.tuple.Pair;
 
 import static com.casinthecloud.simpletest.util.Utils.addUrlParameter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -22,17 +21,7 @@ public class CasLoginTest extends CasTest {
 
     public void run(final Context ctx) throws Exception {
 
-        var loginUrl = getLocation(ctx);
-        if (isBlank(loginUrl)) {
-            loginUrl = addUrlParameter(getCasPrefixUrl() + "/login", "service", getServiceUrl());
-        }
-        login(ctx, loginUrl);
-
-    }
-
-    protected void login(final Context ctx, final String loginUrl) throws Exception {
-
-        callLoginPage(ctx, loginUrl);
+        val loginUrl = callLoginPage(ctx);
 
         if (ctx.getStatus() == 200) {
             postCredentials(ctx, loginUrl);
@@ -42,17 +31,21 @@ public class CasLoginTest extends CasTest {
 
     }
 
-    protected void callLoginPage(final Context ctx, final String loginUrl) throws Exception {
-        val tgc = (Pair<String, String>) ctx.get(TGC);
-
-        if (tgc != null) {
-            info("Re-use: " + tgc.getLeft() + "=" + tgc.getRight());
-            ctx.getCookies().put(getCasCookieName(), tgc.getRight());
+    protected String callLoginPage(final Context ctx) throws Exception {
+        var loginUrl = getLocation(ctx);
+        if (isBlank(loginUrl)) {
+            loginUrl = addUrlParameter(getCasPrefixUrl() + "/login", "service", getServiceUrl());
         }
+
+        useSsoSession(ctx);
 
         ctx.setRequest(get(ctx, loginUrl));
         execute(ctx);
+
+        return loginUrl;
     }
+
+
 
     protected void postCredentials(final Context ctx, final String loginUrl) throws Exception {
         val webflow = substringBetween(ctx.getBody(), "name=\"execution\" value=\"", "\"/>");
@@ -66,8 +59,6 @@ public class CasLoginTest extends CasTest {
         ctx.setRequest(post(ctx, loginUrl));
         execute(ctx);
 
-        val tgc = getCookie(ctx, getCasCookieName());
-        ctx.put(TGC, tgc);
-        info("Found: " + tgc.getLeft() + "=" + tgc.getRight());
+        saveSsoSession(ctx);
     }
 }

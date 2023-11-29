@@ -4,7 +4,6 @@ import com.casinthecloud.simpletest.execution.Context;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import org.apache.commons.lang3.tuple.Pair;
 
 import static com.casinthecloud.simpletest.util.Utils.addUrlParameter;
 import static com.casinthecloud.simpletest.util.Utils.random;
@@ -37,9 +36,9 @@ public class CasOIDCLoginTest extends CasTest {
 
         super.run(ctx);
 
-        callbackCas(ctx);
+        callback(ctx);
 
-        callbackApp(ctx);
+        callback(ctx);
 
     }
 
@@ -57,31 +56,16 @@ public class CasOIDCLoginTest extends CasTest {
         execute(ctx);
         assertStatus(ctx, 302);
 
-        val casSession = getCookie(ctx, DISSESSION);
-        ctx.put(CAS_SESSION, casSession);
-        info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
+        saveCasSession(ctx);
     }
 
-    protected void callbackCas(final Context ctx) throws Exception {
-        val callbackCasUrl = getLocation(ctx);
-        val tgc = (Pair<String, String>) ctx.get(TGC);
-        val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);
+    protected void callback(final Context ctx) throws Exception {
+        val callbackUrl = getLocation(ctx);
 
-        ctx.getCookies().put(casSession.getLeft(), casSession.getRight());
-        ctx.getCookies().put(tgc.getLeft(), tgc.getRight());
-        ctx.setRequest(get(ctx, callbackCasUrl));
-        execute(ctx);
-        assertStatus(ctx, 302);
-    }
+        useSsoSession(ctx);
+        useCasSession(ctx);
 
-    protected void callbackApp(final Context ctx) throws Exception {
-        val callbackAppUrl = getLocation(ctx);
-        val tgc = (Pair<String, String>) ctx.get(TGC);
-        val casSession = (Pair<String, String>) ctx.get(CAS_SESSION);
-
-        ctx.getCookies().put(casSession.getLeft(), casSession.getRight());
-        ctx.getCookies().put(TGC, tgc.getRight());
-        ctx.setRequest(get(ctx, callbackAppUrl));
+        ctx.setRequest(get(ctx, callbackUrl));
         execute(ctx);
         assertStatus(ctx, 302);
     }

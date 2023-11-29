@@ -9,7 +9,7 @@ import static com.casinthecloud.simpletest.util.Utils.addUrlParameter;
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 
 /**
- * A test performing an OIDC login in the CAS server.
+ * A test performing a code OC validation to retrieve the access token in the CAS server.
  *
  * @author Jerome LELEU
  * @since 1.0.0

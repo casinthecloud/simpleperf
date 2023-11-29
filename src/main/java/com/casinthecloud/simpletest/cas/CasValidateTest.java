@@ -9,7 +9,7 @@ import static com.casinthecloud.simpletest.util.Utils.addUrlParameter;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 
 /**
- * A test performing a CAS login in the CAS server.
+ * A test performing a ST validation in the CAS server.
  *
  * @author Jerome LELEU
  * @since 1.0.0
@@ -22,6 +22,7 @@ public class CasValidateTest extends CasTest {
 
         val callbackUrl = getLocation(ctx);
         val st = substringAfter(callbackUrl, "ticket=");
+        info("Service ticket: " + st);
 
         var validateUrl = getCasPrefixUrl() + "/p3/serviceValidate";
         validateUrl = addUrlParameter(validateUrl, "service", getServiceUrl());
