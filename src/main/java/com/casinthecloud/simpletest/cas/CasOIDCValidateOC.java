@@ -28,6 +28,7 @@ public class CasOIDCValidateOC extends CasOIDCLogin {
 
     protected void getAccessToken(final Context ctx) throws Exception {
         val clientAppUrl = getLocation(ctx);
+        info("App callback: " + clientAppUrl);
         val code = substringBetween(clientAppUrl, "code=", "&state");
         info("Code: " + code);
 
