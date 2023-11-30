@@ -21,17 +21,17 @@ import static org.junit.Assert.assertNotNull;
  */
 @Getter
 @Setter
-public class CasSAML2LoginTest extends CasTest {
+public class CasSAML2Login extends CasTest {
 
     private String serviceUrl = "http://localhost:8081/callback?client_name=SAML2Client";
 
     private String relayState = "https://specialurl";
 
-    public CasSAML2LoginTest() {
-        this(new CasLoginTest());
+    public CasSAML2Login() {
+        this(new CasLogin());
     }
 
-    public CasSAML2LoginTest(final CasTest casTest) {
+    public CasSAML2Login(final CasTest casTest) {
         this.tests = new CasTest[] { casTest };
     }
 
@@ -41,8 +41,7 @@ public class CasSAML2LoginTest extends CasTest {
 
         super.run(ctx);
 
-        callback(ctx);
-        assertStatus(ctx, 200);
+        callback(ctx, 200);
 
         val pac4jCallbackUrl = htmlDecode(substringBetween(ctx.getBody(), "<form action=\"", "\" met"));
         val samlResponse = htmlDecode(substringBetween(ctx.getBody(), "\"SAMLResponse\" value=\"", "\"/>"));
@@ -64,8 +63,9 @@ public class CasSAML2LoginTest extends CasTest {
                 "    </saml2:Issuer>\n" +
                 "</saml2p:AuthnRequest>");
 
-        ctx.getFormParameters().put("RelayState", relayState);
-        ctx.getFormParameters().put("SAMLRequest", samlRequest);
+        val fp = ctx.getFormParameters();
+        fp.put("RelayState", relayState);
+        fp.put("SAMLRequest", samlRequest);
         ctx.setRequest(post(ctx, samlSsoUrl));
         execute(ctx);
         assertStatus(ctx, 302);

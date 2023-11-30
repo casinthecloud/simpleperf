@@ -17,7 +17,7 @@ import static org.apache.commons.lang3.StringUtils.substringBetween;
  */
 @Getter
 @Setter
-public class CasLoginTest extends CasTest {
+public class CasLogin extends CasTest {
 
     public void run(final Context ctx) throws Exception {
 
@@ -50,11 +50,12 @@ public class CasLoginTest extends CasTest {
     protected void postCredentials(final Context ctx, final String loginUrl) throws Exception {
         val webflow = substringBetween(ctx.getBody(), "name=\"execution\" value=\"", "\"/>");
 
-        ctx.getFormParameters().put("username", getUsername());
-        ctx.getFormParameters().put("password", getPassword());
-        ctx.getFormParameters().put("execution", webflow);
-        ctx.getFormParameters().put("_eventId", "submit");
-        ctx.getFormParameters().put("geolocation", "");
+        val fp = ctx.getFormParameters();
+        fp.put("username", getUsername());
+        fp.put("password", getPassword());
+        fp.put("execution", webflow);
+        fp.put("_eventId", "submit");
+        fp.put("geolocation", "");
 
         ctx.setRequest(post(ctx, loginUrl));
         execute(ctx);

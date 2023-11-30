@@ -16,7 +16,7 @@ import static org.apache.commons.lang3.StringUtils.substringAfter;
  */
 @Getter
 @Setter
-public class CasValidateTest extends CasTest {
+public class CasValidate extends CasTest {
 
     public void run(final Context ctx) throws Exception {
 

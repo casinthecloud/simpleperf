@@ -64,7 +64,7 @@ public abstract class CasTest extends ChainingTest {
         }
     }
 
-    protected void callback(final Context ctx) throws Exception {
+    protected void callback(final Context ctx, final int status) throws Exception {
         val callbackUrl = getLocation(ctx);
 
         useSsoSession(ctx);
@@ -72,5 +72,6 @@ public abstract class CasTest extends ChainingTest {
 
         ctx.setRequest(get(ctx, callbackUrl));
         execute(ctx);
+        assertStatus(ctx, status);
     }
 }

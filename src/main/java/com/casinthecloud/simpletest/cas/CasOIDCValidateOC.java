@@ -16,7 +16,7 @@ import static org.apache.commons.lang3.StringUtils.substringBetween;
  */
 @Getter
 @Setter
-public class CasOIDCValidateOCTest extends CasOIDCLoginTest {
+public class CasOIDCValidateOC extends CasOIDCLogin {
 
     private String clientSecret = "mysecret";
 

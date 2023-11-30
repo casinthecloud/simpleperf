@@ -16,17 +16,17 @@ import static com.casinthecloud.simpletest.util.Utils.random;
  */
 @Getter
 @Setter
-public class CasOIDCLoginTest extends CasTest {
+public class CasOIDCLogin extends CasTest {
 
     private String clientId = "myclient";
 
     private String scope = "openid email profile";
 
-    public CasOIDCLoginTest() {
-        this(new CasLoginTest());
+    public CasOIDCLogin() {
+        this(new CasLogin());
     }
 
-    public CasOIDCLoginTest(final CasTest casTest) {
+    public CasOIDCLogin(final CasTest casTest) {
         this.tests = new CasTest[] { casTest };
     }
 
@@ -36,11 +36,10 @@ public class CasOIDCLoginTest extends CasTest {
 
         super.run(ctx);
 
-        callback(ctx);
-        assertStatus(ctx, 302);
+        callback(ctx, 302);
 
-        callback(ctx);
-        assertStatus(ctx, 302);
+        callback(ctx, 302);
+
     }
 
     protected void authorize(final Context ctx) throws Exception {

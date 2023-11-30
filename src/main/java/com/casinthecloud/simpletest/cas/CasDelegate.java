@@ -15,11 +15,11 @@ import static org.apache.commons.lang3.StringUtils.substringBetween;
  */
 @Getter
 @Setter
-public class CasDelegateTest extends CasLoginTest {
+public class CasDelegate extends CasLogin {
 
     private final String clientName;
 
-    public CasDelegateTest(final String clientName, final CasTest casTest) {
+    public CasDelegate(final String clientName, final CasTest casTest) {
         this.tests = new CasTest[] { casTest };
         this.clientName = clientName;
     }
@@ -32,19 +32,19 @@ public class CasDelegateTest extends CasLoginTest {
 
         super.run(ctx);
 
-        callback(ctx);
-        assertStatus(ctx, 302);
+        callback(ctx, 302);
 
-        callback(ctx);
-        assertStatus(ctx, 302);
+        callback(ctx, 302);
+
     }
 
     protected void delegate(final Context ctx, final String loginUrl) throws Exception {
         val webflow = substringBetween(ctx.getBody(), "name=\"execution\" value=\"", "\"/>");
 
-        ctx.getFormParameters().put("client_name", getClientName());
-        ctx.getFormParameters().put("_eventId", "delegatedAuthenticationRedirect");
-        ctx.getFormParameters().put("execution", webflow);
+        val fp = ctx.getFormParameters();
+        fp.put("client_name", getClientName());
+        fp.put("_eventId", "delegatedAuthenticationRedirect");
+        fp.put("execution", webflow);
 
         ctx.setRequest(post(ctx, loginUrl));
         execute(ctx);

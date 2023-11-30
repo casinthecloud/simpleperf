@@ -8,7 +8,7 @@ public class MainCAS {
     public static void main(final String... args) throws Exception {
         new Execution(5, () -> {
             return OR(
-                    AND(new CasLoginTest(), new CasValidateTest()),
+                    AND(new CasLogin(), new CasValidate()),
                     CLEAR_CONTEXT
             );
         }).launch();
@@ -58,7 +58,7 @@ Execution ended and took: 304 ms
 public class Main {
 
     public static void main(final String... args) throws Exception {
-        new Execution(3, 1000, CasLoginTest::new).launch();
+        new Execution(3, 1000, CasLogin::new).launch();
     }
 }
 ```
