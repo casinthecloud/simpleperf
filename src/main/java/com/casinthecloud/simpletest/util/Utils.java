@@ -4,12 +4,14 @@ import com.casinthecloud.simpletest.execution.Context;
 import com.casinthecloud.simpletest.test.BaseTest;
 import com.casinthecloud.simpletest.test.ChainingTest;
 import com.casinthecloud.simpletest.test.RandomTest;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+
+import static org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4;
+import static org.apache.commons.lang3.StringUtils.repeat;
 
 /**
  * An utility class.
@@ -18,6 +20,21 @@ import java.util.Base64;
  * @since 1.0.0
  */
 public final class Utils {
+
+    private static int LEVEL = 0;
+
+    public static void incrLevel() {
+        LEVEL = LEVEL + 1;
+    }
+
+    public static void decrLevel() {
+        LEVEL = LEVEL - 1;
+        if (LEVEL < 0) {
+            LEVEL = 0;
+        }
+    }
+
+    private static final int SPACE = 4;
 
     public static final int NB_ITERATIONS_LIMIT = 50;
 
@@ -56,7 +73,7 @@ public final class Utils {
     }
 
     public static String htmlDecode(final String s) {
-        return StringEscapeUtils.unescapeHtml4(s);
+        return unescapeHtml4(s);
     }
 
     public static String addUrlParameter(final String url, final String name, final String value) {
@@ -89,7 +106,7 @@ public final class Utils {
     }
 
     public static void println(final String t) {
-        System.out.println(t);
+        System.out.println(repeat(" ", LEVEL * SPACE) + t);
     }
 
     public static void println() {

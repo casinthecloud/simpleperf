@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
 @Setter
 public class CasSAML2Login extends CasTest {
 
-    private String serviceUrl = "http://localhost:8081/callback?client_name=SAML2Client";
+    private String serviceUrl = "http://localhost:8082/callback?client_name=SAML2Client";
 
     private String relayState = "https://specialurl";
 
@@ -37,9 +37,13 @@ public class CasSAML2Login extends CasTest {
 
     public void run(final Context ctx) throws Exception {
 
+        info("> BEGIN CasSAML2Login");
+
         postRequest(ctx);
 
-        super.run(ctx);
+        incrLevel();
+        this.tests[0].run(ctx);
+        decrLevel();
 
         callback(ctx, 200);
 
@@ -47,6 +51,8 @@ public class CasSAML2Login extends CasTest {
         val samlResponse = htmlDecode(substringBetween(ctx.getBody(), "\"SAMLResponse\" value=\"", "\"/>"));
         assertEquals(serviceUrl, pac4jCallbackUrl);
         assertNotNull(base64Decode(samlResponse));
+
+        info("< END CasSAML2Login");
 
     }
 

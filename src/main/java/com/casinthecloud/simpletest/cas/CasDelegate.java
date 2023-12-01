@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
+import static com.casinthecloud.simpletest.util.Utils.decrLevel;
+import static com.casinthecloud.simpletest.util.Utils.incrLevel;
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 
 /**
@@ -26,15 +28,21 @@ public class CasDelegate extends CasLogin {
 
     public void run(final Context ctx) throws Exception {
 
+        info("> BEGIN CasDelegate");
+
         val loginUrl = callLoginPage(ctx);
 
         delegate(ctx, loginUrl);
 
-        super.run(ctx);
+        incrLevel();
+        this.tests[0].run(ctx);
+        decrLevel();
 
         callback(ctx, 302);
 
         callback(ctx, 302);
+
+        info("< END CasDelegate");
 
     }
 

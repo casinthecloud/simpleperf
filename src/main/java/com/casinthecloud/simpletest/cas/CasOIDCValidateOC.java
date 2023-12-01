@@ -22,7 +22,11 @@ public class CasOIDCValidateOC extends CasOIDCLogin {
 
     public void run(final Context ctx) throws Exception {
 
+        info("> BEGIN CasOIDCValidateOC");
+
         getAccessToken(ctx);
+
+        info("< END CasOIDCValidateOC");
 
     }
 

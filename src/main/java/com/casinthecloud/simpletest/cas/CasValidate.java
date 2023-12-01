@@ -20,6 +20,8 @@ public class CasValidate extends CasTest {
 
     public void run(final Context ctx) throws Exception {
 
+        info("> BEGIN CasValidate");
+
         val callbackUrl = getLocation(ctx);
         val st = substringAfter(callbackUrl, "ticket=");
         info("Service ticket: " + st);
@@ -31,6 +33,8 @@ public class CasValidate extends CasTest {
         ctx.setRequest(get(ctx, validateUrl));
         execute(ctx);
         assertStatus(ctx, 200);
+
+        info("< END CasValidate");
 
     }
 }

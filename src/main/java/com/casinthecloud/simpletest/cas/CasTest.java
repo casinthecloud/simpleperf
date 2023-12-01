@@ -1,7 +1,7 @@
 package com.casinthecloud.simpletest.cas;
 
 import com.casinthecloud.simpletest.execution.Context;
-import com.casinthecloud.simpletest.test.ChainingTest;
+import com.casinthecloud.simpletest.test.MultiTest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -13,10 +13,9 @@ import org.apache.commons.lang3.tuple.Pair;
  * @author Jerome LELEU
  * @since 1.0.0
  */
-
 @Getter
 @Setter
-public abstract class CasTest extends ChainingTest {
+public abstract class CasTest extends MultiTest {
 
     private static final String JSESSIONID = "JSESSIONID";
     private static final String DISSESSION = "DISSESSION";
@@ -25,7 +24,7 @@ public abstract class CasTest extends ChainingTest {
 
     private String casPrefixUrl = "http://localhost:8080/cas";
 
-    private String serviceUrl = "http://localhost:8081/";
+    private String serviceUrl = "http://localhost:8082/";
 
     private String casCookieName = TGC;
 

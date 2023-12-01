@@ -21,6 +21,8 @@ public class CasLogin extends CasTest {
 
     public void run(final Context ctx) throws Exception {
 
+        info("> BEGIN CasLogin");
+
         val loginUrl = callLoginPage(ctx);
 
         if (ctx.getStatus() == 200) {
@@ -28,6 +30,8 @@ public class CasLogin extends CasTest {
         }
 
         assertStatus(ctx, 302);
+
+        info("< END CasLogin");
 
     }
 
