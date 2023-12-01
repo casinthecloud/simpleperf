@@ -17,5 +17,6 @@ public class MainAll {
 
         MainSAMLDelegateCAS.main(args);
         MainSAMLDelegateOIDC.main(args);
+        MainSAMLDelegateSAML.main(args);
     }
 }
