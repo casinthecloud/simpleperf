@@ -7,6 +7,10 @@ import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.tuple.Pair;
 
+import static com.casinthecloud.simpletest.util.Utils.htmlDecode;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
+import static org.junit.Assert.assertTrue;
+
 /**
  * A test for CAS.
  *
@@ -64,12 +68,26 @@ public abstract class CasTest extends MultiTest {
     }
 
     protected void callback(final Context ctx, final int status) throws Exception {
-        val callbackUrl = getLocation(ctx);
 
         useSsoSession(ctx);
         useCasSession(ctx);
 
-        ctx.setRequest(get(ctx, callbackUrl));
+        val previousStatus = ctx.getStatus();
+        if (previousStatus == 302) {
+            val callbackUrl = getLocation(ctx);
+            ctx.setRequest(get(ctx, callbackUrl));
+        } else if (previousStatus == 200) {
+            val body = ctx.getBody();
+            val callbackUrl = htmlDecode(substringBetween(body, "<form action=\"", "\" met"));
+            val samlResponse = htmlDecode(substringBetween(body, "\"SAMLResponse\" value=\"", "\"/>"));
+            val relayState = htmlDecode(substringBetween(body, "\"RelayState\" value=\"", "\"/>"));
+            ctx.getFormParameters().put("SAMLResponse", samlResponse);
+            ctx.getFormParameters().put("RelayState", relayState);
+            ctx.setRequest(post(ctx, callbackUrl));
+        } else {
+            assertTrue("Status must be 302 or 200", previousStatus == 302 || previousStatus == 200);
+        }
+
         execute(ctx);
         assertStatus(ctx, status);
     }

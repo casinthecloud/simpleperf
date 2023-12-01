@@ -34,6 +34,8 @@ public class CasValidate extends CasTest {
         execute(ctx);
         assertStatus(ctx, 200);
 
+        info("User: " + ctx.getBody());
+
         info("< END CasValidate");
 
     }

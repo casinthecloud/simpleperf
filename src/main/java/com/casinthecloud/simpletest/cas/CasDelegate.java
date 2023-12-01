@@ -19,9 +19,12 @@ import static org.apache.commons.lang3.StringUtils.substringBetween;
 @Setter
 public class CasDelegate extends CasLogin {
 
+    private final int nbCallbacks;
+
     private final String clientName;
 
-    public CasDelegate(final String clientName, final CasTest casTest) {
+    public CasDelegate(final int nbCallbacks, final String clientName, final CasTest casTest) {
+        this.nbCallbacks = nbCallbacks;
         this.tests = new CasTest[] { casTest };
         this.clientName = clientName;
     }
@@ -38,9 +41,9 @@ public class CasDelegate extends CasLogin {
         this.tests[0].run(ctx);
         decrLevel();
 
-        callback(ctx, 302);
-
-        callback(ctx, 302);
+        for (int i = 0; i < nbCallbacks; i++) {
+            callback(ctx, 302);
+        }
 
         info("< END CasDelegate");
 

@@ -49,8 +49,6 @@ public class CasLogin extends CasTest {
         return loginUrl;
     }
 
-
-
     protected void postCredentials(final Context ctx, final String loginUrl) throws Exception {
         val webflow = substringBetween(ctx.getBody(), "name=\"execution\" value=\"", "\"/>");
 

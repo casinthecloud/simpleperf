@@ -50,8 +50,8 @@ public class CasOIDCLogin extends CasTest {
 
     protected void authorize(final Context ctx) throws Exception {
         var authorizeUrl = getLocation(ctx);
-        if (isNotBlank(authorizeUrl)) {
-            info("Existing authorizeUrl: " + authorizeUrl);
+        if (isNotBlank(authorizeUrl) && authorizeUrl.contains("response_type=code")) {
+            info("! Existing authorizeUrl");
         } else {
             info("Client app: " + getServiceUrl());
             val state = "s" + random(10000);
