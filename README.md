@@ -3,6 +3,12 @@
 ## Functional testing
 
 ```java
+import com.casinthecloud.simpletest.cas.CasLogin;
+import com.casinthecloud.simpletest.cas.CasValidate;
+import com.casinthecloud.simpletest.execution.Execution;
+
+import static com.casinthecloud.simpletest.util.Utils.*;
+
 public class MainCAS {
 
     public static void main(final String... args) throws Exception {
@@ -55,6 +61,9 @@ Execution ended and took: 304 ms
 ## Performance testing
 
 ```java
+import com.casinthecloud.simpletest.cas.CasLogin;
+import com.casinthecloud.simpletest.execution.Execution;
+
 public class Main {
 
     public static void main(final String... args) throws Exception {
