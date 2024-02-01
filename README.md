@@ -67,7 +67,7 @@ import com.casinthecloud.simpletest.execution.Execution;
 public class Main {
 
     public static void main(final String... args) throws Exception {
-        new Execution(3, 1000, CasLogin::new).launch();
+        new Execution(6, 2000, CasLogin::new).launch();
     }
 }
 ```

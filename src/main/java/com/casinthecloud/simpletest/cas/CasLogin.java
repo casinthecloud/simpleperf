@@ -52,9 +52,13 @@ public class CasLogin extends CasTest {
     protected void postCredentials(final Context ctx, final String loginUrl) throws Exception {
         val webflow = substringBetween(ctx.getBody(), "name=\"execution\" value=\"", "\"/>");
 
+        val username = getUsername();
+        val password = getPassword();
+        info("Logging in: " + username + " / " + password);
+
         val fp = ctx.getFormParameters();
-        fp.put("username", getUsername());
-        fp.put("password", getPassword());
+        fp.put("username", username);
+        fp.put("password", password);
         fp.put("execution", webflow);
         fp.put("_eventId", "submit");
         fp.put("geolocation", "");
