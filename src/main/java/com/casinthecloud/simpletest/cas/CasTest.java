@@ -41,15 +41,20 @@ public abstract class CasTest extends MultiTest {
         if (casSession == null) {
             casSession = getCookie(ctx, JSESSIONID);
         }
-        ctx.put(testId + CAS_SESSION, casSession);
-        info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
+        if (casSession != null) {
+            ctx.put(testId + CAS_SESSION, casSession);
+            info("Found CAS session: " + casSession.getLeft() + "=" + casSession.getRight());
+        }
     }
 
-    protected void useCasSession(final Context ctx) {
+    protected boolean useCasSession(final Context ctx) {
         val casSession = (Pair<String, String>) ctx.get(testId + CAS_SESSION);
         if (casSession != null) {
             info("Re-use: " + casSession.getLeft() + "=" + casSession.getRight());
             ctx.getCookies().put(casSession.getLeft(), casSession.getRight());
+            return true;
+        } else {
+            return false;
         }
     }
 

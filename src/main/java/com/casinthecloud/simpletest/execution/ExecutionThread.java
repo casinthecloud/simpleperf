@@ -42,8 +42,7 @@ public class ExecutionThread extends Thread {
         test.setDisplayInfos(displayInfos);
 
         val maxErrors = test.getMaxErrors();
-        val smallInterval = test.getSmallInterval();
-        val bigInterval = test.getBigInterval();
+        val interval = test.getInterval();
 
         val ctx = new Context();
 
@@ -58,15 +57,18 @@ public class ExecutionThread extends Thread {
                 if (displayInfos) {
                     println();
                 }
-                if (smallInterval != -1 && i % smallInterval == 0) {
-                    print((char) (97 + id));
+                if (interval != -1 && i % interval == 0) {
+                    char c = '%';
+                    if (id > 1 && id <= 10) {
+                        c = (char) (37 + id);
+                    } else if (id >= 11) {
+                        c = (char) (58 + id - 11);
+                    }
+                    print((i *100 ) / nbIterations  + "" + c + " ");
                 }
-                if (bigInterval != -1 && i % bigInterval == 0) {
-                    print((char) (65 + id));
-                }
-            } catch (final Exception e) {
+            } catch (final Throwable t) {
                 if (displayErrors) {
-                    e.printStackTrace();
+                    t.printStackTrace();
                 } else {
                     print("!");
                 }

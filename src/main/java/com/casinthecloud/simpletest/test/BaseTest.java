@@ -42,11 +42,7 @@ public abstract class BaseTest {
 
     @Getter
     @Setter
-    private int smallInterval = 40;
-
-    @Getter
-    @Setter
-    private int bigInterval = 250;
+    private int interval = 100;
 
     @Getter
     @Setter
@@ -68,11 +64,13 @@ public abstract class BaseTest {
 
     protected Pair<String, String> getCookie(final Context ctx, final String name) {
         val listHeaders = ctx.getHeaders().get("set-cookie");
-        for (val header : listHeaders) {
-            if (header.startsWith(name)) {
-                val key = substringBefore(header, "=");
-                val value = substringBetween(header, "=", ";");
-                return new ImmutablePair<String, String>(key, value);
+        if (listHeaders != null) {
+            for (val header : listHeaders) {
+                if (header.startsWith(name)) {
+                    val key = substringBefore(header, "=");
+                    val value = substringBetween(header, "=", ";");
+                    return new ImmutablePair<String, String>(key, value);
+                }
             }
         }
         return null;

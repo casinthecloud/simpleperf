@@ -34,21 +34,28 @@ public class CasOIDCLogin extends CasTest {
 
         info("> BEGIN CasOIDCLogin");
 
-        authorize(ctx);
+        val alreadyAuthenticated = authorize(ctx);
 
-        incrLevel();
-        this.tests[0].run(ctx);
-        decrLevel();
+        if (!alreadyAuthenticated) {
+            info("> Not authenticated = performing login");
+            incrLevel();
+            this.tests[0].run(ctx);
+            decrLevel();
 
-        callback(ctx, 302);
+            callback(ctx, 302);
 
-        callback(ctx, 302);
+            callback(ctx, 302);
+        } else {
+            info("> Already authenticated = skipping login");
+        }
 
         info("< END CasOIDCLogin");
 
     }
 
-    protected void authorize(final Context ctx) throws Exception {
+    protected boolean authorize(final Context ctx) throws Exception {
+        val alreadyAuthenticated = useCasSession(ctx);
+
         var authorizeUrl = getLocation(ctx);
         if (isNotBlank(authorizeUrl) && authorizeUrl.contains("response_type=code")) {
             info("! Existing authorizeUrl");
@@ -69,5 +76,7 @@ public class CasOIDCLogin extends CasTest {
         assertStatus(ctx, 302);
 
         saveCasSession(ctx);
+
+        return alreadyAuthenticated;
     }
 }
